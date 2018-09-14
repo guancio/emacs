@@ -27,7 +27,7 @@
 (require 'g-elisp)
 (require 'g-lsp)
 (require 'g-python)
-(require 'g-cpp)
+;; (require 'g-cpp)
 
 
 ;; company

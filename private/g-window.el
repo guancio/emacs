@@ -297,8 +297,7 @@ _<backspace>_ cancel _<return>_uit
       )))
 
 (general-define-key
- :prefix "<f7> f"
- "k" 'kill-buffer
+ :prefix "<f7> b"
  "q" 'g/kill-buffer-may-delete-window)
 
 

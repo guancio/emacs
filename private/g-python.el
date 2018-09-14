@@ -1,5 +1,6 @@
 (use-package imenu-list
   :ensure t
+  :commands (imenu-list-smart-toggle)
   :init
   ;; It does not work. I must open it manually and update it manually
   ;; (add-hook 'python-mode-hook #'imenu-list)
@@ -28,14 +29,6 @@
     )
   )
 
-(use-package company
-  :ensure t
-  )
-(use-package company-lsp
-  :ensure t
-  :init
-  (push 'company-lsp company-backends)
-  )
 
 
 ;; disable warning if there is no project

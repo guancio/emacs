@@ -26,10 +26,11 @@
      "aq" '(save-buffers-kill-terminal :which-key "quit")
      "b"  '(:ignore t :which-key "Buffers")
      "bb" 'helm-mini
-     ;;"bd" 'kill-buffer
+     "bk" '((lambda () (interactive)(kill-buffer)) :which-key "kill this buffer")
+     "bK" 'kill-buffer
      "f"  '(:ignore t :which-key "Files")
      "ff" 'helm-find-files
-     "fg" 'revert-buffer-no-confirm
+     "fg" 'revert-buffer-no-confirm 
      "fs" 'save-buffer
      "fS" 'write-file
      "g"  '(:ignore t :which-key "Go")
@@ -46,6 +47,8 @@
      "k s" 'kmacro-start-macro
      "k d" 'kmacro-end-macro
      "k e" 'kmacro-end-and-call-macro
+     "k a" 'mark-whole-buffer
+     "k h" 'query-replace
      "s"  '(:ignore t :which-key "Search")
      "s s" 'helm-swoop
      "t"  '(:ignore t :which-key "Toggle")     
