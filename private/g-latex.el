@@ -1,3 +1,11 @@
+(defvar latex-nofill-env '("equation"
+                           "equation*"
+                           "align"
+                           "align*"
+                           "tabular"
+                           "tikzpicture")
+  "List of environment names in which `auto-fill-mode' will be inhibited.")
+
 ;; Should be created after loading auctex
 (defun latex/build ()
   (interactive)

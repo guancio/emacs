@@ -13,12 +13,13 @@ auto-dictionary is not used, use the adict version otherwise."
   :init
   (progn
     (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+    (add-hook 'text-mode-hook 'flyspell-mode)
     (general-define-key
-     :prefix "M-SPC"
+     :prefix "<f7>"
      "S"  '(:ignore t :which-key "Spelling")
      )
     (general-define-key
-     :prefix "M-SPC S"
+     :prefix "<f7> S"
      "b" 'flyspell-buffer
      "d" 'spell-checking/change-dictionary
      "n" 'flyspell-goto-next-error
@@ -33,7 +34,7 @@ auto-dictionary is not used, use the adict version otherwise."
              flyspell-correct-previous-word-generic)
   :init
   (general-define-key
-   :prefix "M-SPC S"
+   :prefix "<f7> S"
    "c" 'flyspell-correct-previous-word-generic))
 
 (use-package flyspell-correct-helm

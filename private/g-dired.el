@@ -1,16 +1,17 @@
 ;; all-the-icons does not work
 ;; (insert (all-the-icons-icon-for-file "Code.js" :height 2.0))
-(require 'font-lock)
-(use-package font-lock+
-  :load-path "/home/guancio/emacs-test/private/font-lock-plus")
-
-(use-package all-the-icons
-  :ensure t)
 (use-package all-the-icons-dired
   :ensure t
   :commands (all-the-icons-dired-mode)
   :init
-  (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+  (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
+  :config
+  (require 'font-lock)
+  (use-package font-lock+
+    :load-path "/home/guancio/emacs-test/private/font-lock-plus")
+  (use-package all-the-icons
+    :ensure t)
+  )
 
 
 
@@ -55,15 +56,79 @@
         ("\\.zip\\'" . "zip %o -r --filesync %i")
         ))
 
+(defun my-dired-mode-hook ()
+  (progn
+   (auto-revert-mode t)
+  ))
 
+(add-hook 'dired-mode-hook 'my-dired-mode-hook)
 
 
 ;; TODO: avoid repetition
 (general-define-key
  :keymaps 'dired-mode-map
  "<backspace>" 'dired-up-directory
- "c" 'dired-do-compress-to
- "d" 'dired-flag-file-deletion)
+ "<tab>" 'dired-hide-subdir
+ "&" 'dired-do-async-shell-command
+ "+" 'dired-create-directory
+ "=" 'dired-diff
+ "C" 'dired-do-copy
+ "D" 'dired-do-delete
+ "G" 'dired-do-chgrp
+ "H" 'dired-do-find-regexp-and-replace
+ "L" 'dired-do-symlink
+ "M" 'dired-do-chmod
+ "O" 'dired-do-chown
+ "R" 'dired-do-rename
+ "S" 'dired-do-find-regexp
+ "U" 'dired-unmark-all-marks
+ "X" 'dired-do-shell-command
+ "Z" '(dired-do-compress :which-key "(de)compress")
+ "d" 'dired-flag-file-deletion
+ "e" 'dired-toggle-read-only
+ "g" 'revert-buffer
+ "h" 'describe-mode
+ "k" '((lambda () (interactive) (dired-do-kill-lines t)) :which-key "remove")
+ ;; does not show icons
+ "i" 'dired-maybe-insert-subdir
+ "m" 'dired-mark
+ "q" 'quit-window
+ "u" 'dired-unmark
+ "x" 'dired-do-flagged-delete
+ "z" 'dired-do-compress-to
+ "y" 'dired-show-file-type
+ )
+
+(general-define-key
+ :keymaps 'dired-mode-map
+ :prefix "o"
+ "" '(nil :which-key "Open")
+ "1" 'g/find-select-window-1
+ "2" 'g/find-select-window-2
+ "3" 'g/find-select-window-3
+ "4" 'g/find-select-window-4
+ "5" 'g/find-select-window-5
+ "6" 'g/find-select-window-6
+ "7" 'g/find-select-window-7
+ "8" 'g/find-select-window-8
+ "9" 'g/find-select-window-9
+)
+(general-define-key
+ :keymaps 'dired-mode-map
+ :prefix "r"
+ "" '(nil :which-key "Regexp")
+ "r &" 'dired-flag-garbage-files
+ "r C" 'dired-do-copy-regexp
+ "r H" 'dired-do-hardlink-regexp
+ "r R" 'dired-do-rename-regexp
+ "r S" 'dired-do-symlink-regexp
+ "r d" 'dired-flag-files-regexp
+ "r g" 'dired-mark-files-containing-regexp
+ "r l" 'dired-downcase
+ "r m" 'dired-mark-files-regexp
+ "r r" 'dired-do-rename-regexp
+ "r u" 'dired-upcase
+)
 
 (general-define-key
  :keymaps 'dired-mode-map
@@ -84,8 +149,9 @@
  "S" 'dired-do-find-regexp
  "U" 'dired-unmark-all-marks
  "X" 'dired-do-shell-command
- "Z" 'dired-do-compress
+ "Z" '(dired-do-compress :which-key "(de)compress")
  "d" 'dired-flag-file-deletion
+ "e" 'dired-toggle-read-only
  "g" 'revert-buffer
  "h" 'describe-mode
  "k" '((lambda () (interactive) (dired-do-kill-lines t)) :which-key "remove")
@@ -123,6 +189,11 @@
  "r u" 'dired-upcase
  )
 
+(general-define-key
+ :keymaps 'wdired-mode-map
+ :prefix "<f7> m"
+ "b" 'wdired-finish-edit
+)
 
 (general-define-key
  :keymaps 'dired-mode-map
@@ -133,6 +204,8 @@
 
 (use-package dired-sort
   :load-path "/home/guancio/emacs-test/private/dired-sort"
+  :commands (dired-sort-size dired-sort-extension dired-sort-ctime
+			     dired-sort-utime dired-sort-time dired-sort-name)
   :init
   (general-define-key
    :keymaps 'dired-mode-map
@@ -142,9 +215,21 @@
    "s e" 'dired-sort-extension
    "s c" 'dired-sort-ctime
    "s a" 'dired-sort-utime
-   "s t" 'dired-sort-time
+   "s d" 'dired-sort-time
    "s n" 'dired-sort-name
-   ))
+   )
+  (general-define-key
+   :keymaps 'dired-mode-map
+   :prefix "s"
+   "" '(nil :which-key "Sort")
+   "s" 'dired-sort-size
+   "e" 'dired-sort-extension
+   "c" 'dired-sort-ctime
+   "a" 'dired-sort-utime
+   "d" 'dired-sort-time
+   "n" 'dired-sort-name
+   )
+  )
 
 
 (provide 'g-dired)

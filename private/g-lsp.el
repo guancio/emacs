@@ -21,3 +21,5 @@
 
 (provide 'g-lsp)
 
+;;     "gd" 'lsp-ui-peek-find-definitions
+;;     "gr" 'lsp-ui-peek-find-references

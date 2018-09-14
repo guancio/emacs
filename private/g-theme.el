@@ -11,7 +11,7 @@
   ;; sometimes does not work
   (toggle-scroll-bar -1)
   (tool-bar-mode -1)
-  ;;(load-theme 'doom-one t)
+  ;; (load-theme 'doom-one t)
   (load-theme 'doom-dracula t)
   ;; (load-theme 'doom-opera-light t)
 
@@ -31,6 +31,7 @@
 (use-package solaire-mode
   :ensure t
   :hook ((change-major-mode after-revert ediff-prepare-buffer) . turn-on-solaire-mode)
+  :requires doom-themes
   :config
   (add-hook 'minibuffer-setup-hook #'solaire-mode-in-minibuffer)
   (solaire-mode-swap-bg)
