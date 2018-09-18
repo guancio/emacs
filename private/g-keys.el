@@ -20,7 +20,6 @@
     (general-define-key
      :prefix "<f7>"
      "a"  '(:ignore t :which-key "Applications")
-     "as"  'eshell
      "an"  'new-frame
      "ae" '(start-emacs :which-key "emacs")
      "aq" '(save-buffers-kill-terminal :which-key "quit")
@@ -30,13 +29,15 @@
      "bK" 'kill-buffer
      "f"  '(:ignore t :which-key "Files")
      "ff" 'helm-find-files
-     "fg" 'revert-buffer-no-confirm 
+     "fg" 'revert-buffer-no-confirm
+     "fp" 'find-file-at-point
      "fs" 'save-buffer
      "fS" 'write-file
      "g"  '(:ignore t :which-key "Go")
      "gi" 'helm-imenu
      ;; does not work
      ;; "ga" 'xref-find-apropos
+     "G"  'magit-status
      "h"  '(:ignore t :which-key "Help")
      "h k" 'describe-key
      "h K" 'which-key-show-top-level
@@ -75,7 +76,14 @@
 
 (helm-mode 1)
 
+(use-package disable-mouse
+  :ensure t
+  :init
+  (general-define-key
+   :prefix "<f7> t"
+     "M"  'global-disable-mouse-mode)
+)
 
-;; tab complete in helm?
 
+  
 (provide 'g-keys)

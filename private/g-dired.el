@@ -231,5 +231,18 @@
    )
   )
 
+(use-package dired-du
+  :ensure t
+  :init
+  (general-define-key
+   :keymaps 'dired-mode-map
+   :prefix "<f7> t"
+   "s" 'dired-du-mode
+   "r" 'dired-du--toggle-human-readable
+  ))
+
+
+;; (use-package sunrise-commander
+;;   :load-path "/home/guancio/emacs-test/private/sunrise-commander")
 
 (provide 'g-dired)

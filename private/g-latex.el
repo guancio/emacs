@@ -56,6 +56,17 @@ the automatic filling of the current paragraph."
     (add-hook 'LaTeX-mode-hook 'smartparens-mode)
     (add-hook 'LaTeX-mode-hook 'flyspell-mode)
     (add-hook 'LaTeX-mode-hook 'flyspell-buffer)
+
+    (defun latex-spell-hook ()
+      (make-local-variable 'company-backends)
+      ;; company-ispell is the plugin to complete words
+      (add-to-list 'company-backends 'company-ispell)
+      (company-mode)
+      )
+    (add-hook 'LaTeX-mode-hook 'latex-spell-hook)
+
+
+    
     ;; Update PDF buffers after successful LaTeX runs
     (add-hook 'TeX-after-compilation-finished-functions
               #'TeX-revert-document-buffer)
@@ -77,6 +88,12 @@ the automatic filling of the current paragraph."
      "v" 'TeX-view                                    ;; C-c C-v
      ;; what to do with the other 2000 keymaps?
      )
+    (general-define-key
+     :keymaps 'LaTeX-mode-map
+     :prefix "<f7> t"
+     "m" 'TeX-master-file-ask
+     )
+
     )
   )
 

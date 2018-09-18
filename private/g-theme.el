@@ -1,32 +1,51 @@
-(use-package doom-themes
-  :ensure t
-  :init
-  ;; Global settings (defaults)
-  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-        doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  :config
-  ;; Load the theme (doom-one, doom-molokai, etc); keep in mind that each theme
-  ;; may have their own settings.
-  (menu-bar-mode -1)
-  ;; sometimes does not work
-  (toggle-scroll-bar -1)
-  (tool-bar-mode -1)
-  ;; (load-theme 'doom-one t)
-  (load-theme 'doom-dracula t)
-  ;; (load-theme 'doom-opera-light t)
+(menu-bar-mode -1)
+;; sometimes does not work
+(toggle-scroll-bar -1)
+(tool-bar-mode -1)
 
-  ;; Enable flashing mode-line on errors
-  ;; (doom-themes-visual-bell-config)
-  ;; Enable custom neotree theme (all-the-icons must be installed!)
-  ;; (doom-themes-neotree-config)
-  ;; or for treemacs users
-  ;; (doom-themes-treemacs-config)
-  ;; Corrects (and improves) org-mode's native fontification.
-  ;; (doom-themes-org-config)
-  ;; look at https://github.com/hlissner/emacs-solaire-mode
-  ;; (use-package hlinum :ensure t)
-  ;; (hlinum-activate)
-)
+(use-package powerline
+  :ensure t
+  )
+
+(use-package moe-theme
+  :ensure t
+  :config
+  (setq moe-theme-highlight-buffer-id t)
+    
+  ;;(moe-dark)
+  (moe-light)
+  (powerline-moe-theme)
+  )
+
+;; (use-package doom-themes
+;;   :ensure t
+;;   :init
+;;   ;; Global settings (defaults)
+;;   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+;;         doom-themes-enable-italic t) ; if nil, italics is universally disabled
+;;   :config
+;;   ;; Load the theme (doom-one, doom-molokai, etc); keep in mind that each theme
+;;   ;; may have their own settings.
+;;   (menu-bar-mode -1)
+;;   ;; sometimes does not work
+;;   (toggle-scroll-bar -1)
+;;   (tool-bar-mode -1)
+;;   ;; (load-theme 'doom-one t)
+;;   (load-theme 'doom-dracula t)
+;;   ;; (load-theme 'doom-opera-light t)
+
+;;   ;; Enable flashing mode-line on errors
+;;   ;; (doom-themes-visual-bell-config)
+;;   ;; Enable custom neotree theme (all-the-icons must be installed!)
+;;   ;; (doom-themes-neotree-config)
+;;   ;; or for treemacs users
+;;   ;; (doom-themes-treemacs-config)
+;;   ;; Corrects (and improves) org-mode's native fontification.
+;;   ;; (doom-themes-org-config)
+;;   ;; look at https://github.com/hlissner/emacs-solaire-mode
+;;   ;; (use-package hlinum :ensure t)
+;;   ;; (hlinum-activate)
+;; )
 
 (use-package solaire-mode
   :ensure t
@@ -57,12 +76,12 @@
   (winum-mode)
   )
 
-(use-package spaceline
-  :ensure t
-  :config
-  (spaceline-emacs-theme)
-  (spaceline-helm-mode)
-  )
+;; (use-package spaceline
+;;   :ensure t
+;;   :config
+;;   (spaceline-emacs-theme)
+;;   (spaceline-helm-mode)
+;;   )
 
 
 (provide 'g-theme)

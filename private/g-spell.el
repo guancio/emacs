@@ -7,6 +7,10 @@ auto-dictionary is not used, use the adict version otherwise."
       (adict-change-dictionary)
     (call-interactively 'ispell-change-dictionary)))
 
+(defun def-word ()
+    (interactive)
+    (eww (concat "https://www.merriam-webster.com/dictionary/" (thing-at-point 'word))))
+
 (use-package flyspell
   :ensure t
   :commands (flyspell-mode flyspell-prog-mode)
@@ -21,7 +25,8 @@ auto-dictionary is not used, use the adict version otherwise."
     (general-define-key
      :prefix "<f7> S"
      "b" 'flyspell-buffer
-     "d" 'spell-checking/change-dictionary
+     "d" 'def-word
+     "D" 'spell-checking/change-dictionary
      "n" 'flyspell-goto-next-error
      "t" '(flyspell-mode :which-key "toggle")
      ;; order alphabetically
