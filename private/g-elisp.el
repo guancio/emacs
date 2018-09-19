@@ -6,4 +6,6 @@
  "e"  'eval-last-sexp
  )
 
+(setq-default indent-tabs-mode nil)
+
 (provide 'g-elisp)

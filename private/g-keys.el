@@ -11,7 +11,53 @@
 
 (defun start-emacs ()
   (interactive)
-  (start-process-shell-command "emacs" "*emacs*" "/home/guancio/emacs-test/run.sh"))
+  (start-process-shell-command "emacs" "*emacs*" "setsid" "sh" "/home/guancio/emacs-test/run.sh"))
+
+
+
+(defun g-toggle-dark-light ()
+  (interactive)
+  ;; use a property “state”. Value is t or nil
+  (if (get 'g-toggle-dark-light 'state)
+      (progn
+        (moe-light)
+        (put 'g-toggle-dark-light 'state nil))
+    (progn
+        (moe-dark)
+        (put 'g-toggle-dark-light 'state t))))
+
+
+(defhydra guancio-zoom ()
+  "
+Zoom
+----------------------------------------------------------------
+"
+  ("=" text-scale-increase "in")
+  ("-" text-scale-decrease "out")
+  ("0" (lambda () (interactive)
+         (text-scale-set 0)
+         )
+   "reset")
+  )
+
+
+(defun xah-new-empty-buffer ()
+  "Create a new empty buffer.
+New buffer will be named “untitled” or “untitled<2>”, “untitled<3>”, etc.
+
+It returns the buffer (for elisp programing).
+
+URL `http://ergoemacs.org/emacs/emacs_new_empty_buffer.html'
+Version 2017-11-01"
+  (interactive)
+  (let (($buf (generate-new-buffer "untitled")))
+    (switch-to-buffer $buf)
+    (funcall initial-major-mode)
+    (setq buffer-offer-save t)
+    $buf
+    ))
+(setq initial-major-mode (quote text-mode))
+
 
 (use-package general
   :ensure t
@@ -20,7 +66,7 @@
     (general-define-key
      :prefix "<f7>"
      "a"  '(:ignore t :which-key "Applications")
-     "an"  'new-frame
+     "an"  'new-framel
      "ae" '(start-emacs :which-key "emacs")
      "aq" '(save-buffers-kill-terminal :which-key "quit")
      "b"  '(:ignore t :which-key "Buffers")
@@ -29,7 +75,9 @@
      "bK" 'kill-buffer
      "f"  '(:ignore t :which-key "Files")
      "ff" 'helm-find-files
+     "fa" 'save-some-buffers
      "fg" 'revert-buffer-no-confirm
+     "fn" 'xah-new-empty-buffer
      "fp" 'find-file-at-point
      "fs" 'save-buffer
      "fS" 'write-file
@@ -49,11 +97,12 @@
      "k d" 'kmacro-end-macro
      "k e" 'kmacro-end-and-call-macro
      "k a" 'mark-whole-buffer
-     "k h" 'query-replace
      "s"  '(:ignore t :which-key "Search")
      "s s" 'helm-swoop
-     "t"  '(:ignore t :which-key "Toggle")     
-     ;; flyckeck buffer
+     "s h" 'replace-string
+     "t"  '(:ignore t :which-key "Toggle")
+     "t z" 'guancio-zoom/body
+     "x" 'helm-M-x
      ;; company / company with doc
      )
     (general-define-key
@@ -81,9 +130,21 @@
   :init
   (general-define-key
    :prefix "<f7> t"
-     "M"  'global-disable-mouse-mode)
+   "M"  'global-disable-mouse-mode
+   "l"  'g-toggle-dark-light)
 )
 
 
-  
+(use-package keyfreq
+  :ensure t
+  :init
+  (keyfreq-mode 1)
+  (keyfreq-autosave-mode 1)
+  (general-define-key
+   :prefix "<f7>"
+   "i" '(:igore t :which-key "Info")
+   "i k" 'keyfreq-show)
+  )
+
+
 (provide 'g-keys)

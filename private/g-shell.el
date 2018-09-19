@@ -1,8 +1,20 @@
-(progn
-  (general-define-key
-   :prefix "<f7>"
-   "as"  'eshell
-   ))
+(defun eshell-new()
+  "Open a new instance of eshell."
+  (interactive)
+  (eshell 'Z))
+
+(general-define-key
+ :prefix "<f7>"
+ "as"  'eshell
+ "aS"  'eshell-new
+ )
+(general-define-key
+ :prefix "<f7>"
+ :keymaps 'eshell-mode-mapm
+ "<up>"  'helm-eshell-history
+ )
+
+
 
 ;; does not work
 ;; (use-package esh-autosuggest

@@ -323,7 +323,7 @@ _<backspace>_ _<return>_ cancel
   ("m" (guancio-move/body)
    :exit t)
   
-;;  ("a" g/exwm-layout-toggle-fullscreen)
+  ("a" toggle-frame-maximized)
 
   ("0" winum-select-window-0-or-10)
   ("1" winum-select-window-1)
@@ -374,6 +374,7 @@ _<backspace>_ _<return>_ cancel
  "s-8" 'winum-select-window-8
  "s-9" 'winum-select-window-9
 
+ "s-a" 'toggle-frame-maximized
  "s-d" 'delete-window
  "s-q" 'g/kill-buffer-may-delete-window
  "s-b" 'helm-mini
@@ -385,6 +386,9 @@ _<backspace>_ _<return>_ cancel
  "s-v" 'g/paste-window
 )
 
+(general-define-key
+ :prefix "<f7>"
+ "w" 'guancio-window/body)
 
 ;;  ("F" follow-mode)
   

@@ -2,7 +2,8 @@
  :keymaps 'prog-mode-map
  :prefix "<f7>"
  "gR" 'xref-find-references
- "td"  'eldoc-mode
+ "td" 'eldoc-mode
+ "ts" 'whitespace-mode
  )
 
 (use-package helm-xref
