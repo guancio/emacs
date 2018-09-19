@@ -66,7 +66,7 @@ Version 2017-11-01"
     (general-define-key
      :prefix "<f7>"
      "a"  '(:ignore t :which-key "Applications")
-     "an"  'new-framel
+     "an"  'new-frame
      "ae" '(start-emacs :which-key "emacs")
      "aq" '(save-buffers-kill-terminal :which-key "quit")
      "b"  '(:ignore t :which-key "Buffers")
