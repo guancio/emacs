@@ -45,6 +45,8 @@
   ;; don't keep message buffers around
   (setq message-kill-buffer-on-exit t)
 
+  (setq mu4e-attachment-dir  "~/Downloads")
+  
   (general-define-key
    :prefix "<f7>"
    "am"  '(mu4e :which-key "e-mail"))
@@ -72,7 +74,6 @@
    "d" 'mu4e-headers-mark-for-trash
    "D" 'mu4e-headers-mark-for-delete
    
-   "s" 'mu4e-headers-change-sorting
    "t" 'mu4e-headers-mark-thread
    "U" 'mu4e-mark-unmark-all
    "g" 'mu4e-headers-rerun-search
@@ -100,7 +101,9 @@
    "d" 'mu4e-headers-mark-for-trash
    "D" 'mu4e-headers-mark-for-delete
    
-   "s" 'mu4e-headers-change-sorting
+   "S" 'mu4e-headers-search
+   "/" 'mu4e-headers-search-narrow
+   "e" 'mu4e-headers-search-edit
    "t" 'mu4e-headers-mark-thread
    "U" 'mu4e-mark-unmark-all
    "g" 'mu4e-headers-rerun-search
@@ -120,16 +123,19 @@
    "t" 'mu4e-headers-toggle-threading
    "f" 'mu4e-headers-toggle-full-search
    "d" 'mu4e-headers-toggle-skip-duplicates
+   "s" 'mu4e-headers-change-sorting
    "r" 'mu4e-headers-toggle-include-related)
 
   (general-define-key
    :prefix "<f7> s"
    :keymaps 'mu4e-headers-mode-map
-   "n" 'mu4e-headers-search-narrow
+   "/" 'mu4e-headers-search-narrow
    "e" 'mu4e-headers-search-edit
-   "f" 'mu4e-headers-search)
+   "f" 'mu4e-headers-search
+   "m" 'helm-mu
+   "c" 'helm-mu-contacts)
 
-  ;; %		mu4e-headers-mark-pattern
+   ;; %		mu4e-headers-mark-pattern
    ;; &		mu4e-headers-mark-custom
    ;; +		mu4e-headers-mark-for-flag
    ;; -		mu4e-headers-mark-for-unflag
@@ -146,23 +152,11 @@
    ;; ]		mu4e-headers-next-unread
    ;; a		mu4e-headers-action
    ;; b		mu4e-headers-search-bookmark
-   ;; t		mu4e-headers-mark-subthread
-   ;; y		mu4e-select-other-view
-   ;; C-+		mu4e-headers-split-view-grow
-   ;; C--		mu4e-headers-split-view-shrink
-   ;; <C-kp-add>	mu4e-headers-split-view-grow
-   ;; <C-kp-subtract>			mu4e-headers-split-view-shrink
-   ;; <M-down>	mu4e-headers-next
    ;; <M-left>	mu4e-headers-query-prev
    ;; <M-right>	mu4e-headers-query-next
-   ;; <M-up>		mu4e-headers-prev
 
    
 
-  ;; better keybinding in header
-  ;; sorting
-  ;; better search
-  
   ;; mu4e message: download attachment...
   ;; detach message
   ;; open in emacs
@@ -170,89 +164,98 @@
   ;; show addresses
   
   (general-define-key
-   :keymap 'mu4e-view-mode-map
+   :keymaps 'mu4e-view-mode-map
    :prefix "<f7>"
    "t c" 'mu4e-view-toggle-hide-cited
+   "t 0" 'mu4e-view-raw-message
+   "t t" 'mu4e-headers-toggle-threading
+   "t f" 'mu4e-headers-toggle-full-search
+   "t d" 'mu4e-headers-toggle-skip-duplicates
+   "t s" 'mu4e-headers-change-sorting
+   "t r" 'mu4e-headers-toggle-include-related
+   "t h" 'mu4e-view-toggle-html
    )
 
+  (general-define-key
+   :prefix "<f7> m"
+   :keymaps 'mu4e-view-mode-map
+
+   "." 'mu4e-view-mark-for-something
+   "?" 'mu4e-view-mark-for-unread
+
+   "C" 'mu4e-compose-new
+   "F" 'mu4e-compose-forward
+   "R" 'mu4e-compose-reply
+   
+   "d" 'mu4e-view-mark-for-trash
+   "D" 'mu4e-view-mark-for-delete
+   
+   "a" '(:ignore t :which-key "attachment")
+   "a a" 'mu4e-view-attachment-action
+   "a s" 'mu4e-view-save-attachment
+   "a o" 'mu4e-view-open-attachment
+   
+   "t" 'mu4e-view-mark-thread
+   "U" 'mu4e-view-unmark-all
+   "g" 'mu4e-view-go-to-url
+   "j" 'mu4e~headers-jump-to-maildir
+   "m" 'mu4e-view-mark-for-move
+   "n" 'mu4e-view-next
+   "p" 'mu4e-view-prev
+   "q" 'mu4e~view-quit-buffer
+   "r" 'mu4e-view-mark-for-refile
+   "u" 'mu4e-view-unmark
+   "x" 'mu4e-view-marked-execute
+
+   "e" 'mu4e-view-search-edit
+   "s" 'mu4e-headers-search
+   )
   
-  ;; !		mu4e-view-mark-for-read
-  ;; %		mu4e-view-mark-pattern
-  ;; &		mu4e-view-mark-custom
-  ;; *		mu4e-view-mark-for-something
-  ;; +		mu4e-view-mark-for-flag
-  ;; -		mu4e-view-mark-for-unflag
-  ;; .		mu4e-view-raw-message
-  ;; /		mu4e-view-search-narrow
-  ;; 0 .. 9		digit-argument
-  ;; ;		mu4e-context-switch
-  ;; <		beginning-of-buffer
-  ;; =		mu4e-view-mark-for-untrash
-  ;; >		end-of-buffer
-  ;; ?		mu4e-view-mark-for-unread
-  ;; A		mu4e-view-attachment-action
-  ;; B		mu4e-headers-search-bookmark-edit
-  ;; C		mu4e-compose-new
-  ;; D		mu4e-view-mark-for-delete
-  ;; E		mu4e-compose-edit
-  ;; F		mu4e-compose-forward
-  ;; H		mu4e-display-manual
-  ;; O		mu4e-headers-change-sorting
-  ;; P		mu4e-headers-toggle-threading
-  ;; Q		mu4e-headers-toggle-full-search
-  ;; R		mu4e-compose-reply
-  ;; S		mu4e-view-search-edit
-  ;; T		mu4e-view-mark-thread
-  ;; U		mu4e-view-unmark-all
-  ;; W		mu4e-headers-toggle-include-related
-  ;; [		mu4e-view-headers-prev-unread
-  ;; ]		mu4e-view-headers-next-unread
-  ;; a		mu4e-view-action
-  ;; b		mu4e-headers-search-bookmark
-  ;; d		mu4e-view-mark-for-trash
-  ;; e		mu4e-view-save-attachment
-  ;; f		mu4e-view-fetch-url
-  ;; g		mu4e-view-go-to-url
-  ;; h		mu4e-view-toggle-html
-  ;; j		mu4e~headers-jump-to-maildir
-  ;; k		mu4e-view-save-url
-  ;; m		mu4e-view-mark-for-move
-  ;; n		mu4e-view-headers-next
-  ;; o		mu4e-view-open-attachment
-  ;; p		mu4e-view-headers-prev
-  ;; q		mu4e~view-quit-buffer
-  ;; r		mu4e-view-mark-for-refile
-  ;; s		mu4e-headers-search
-  ;; t		mu4e-view-mark-subthread
-  ;; u		mu4e-view-unmark
-  ;; v		mu4e-view-verify-msg-popup
+  (general-define-key
+   :keymaps 'mu4e-view-mode-map
+
+   "." 'mu4e-view-mark-for-something
+   "?" 'mu4e-view-mark-for-unread
+
+   "C" 'mu4e-compose-new
+   "F" 'mu4e-compose-forward
+   "R" 'mu4e-compose-reply
+   
+   "d" 'mu4e-view-mark-for-trash
+   "D" 'mu4e-view-mark-for-delete
+   
+
+   "t" 'mu4e-view-mark-thread
+   "U" 'mu4e-view-unmark-all
+   "g" 'mu4e-view-go-to-url
+   "j" 'mu4e~headers-jump-to-maildir
+   "m" 'mu4e-view-mark-for-move
+   "n" 'mu4e-view-headers-next
+   "p" 'mu4e-view-headers-prev
+   "q" 'mu4e~view-quit-buffer
+   "r" 'mu4e-view-mark-for-refile
+   "u" 'mu4e-view-unmark
+   "x" 'mu4e-view-marked-execute
+
+   "e" 'mu4e-view-search-edit
+   "s" 'mu4e-headers-search
+   )
+
+  (general-define-key
+   :keymaps 'mu4e-view-mode-map
+   :prefix "a"
+   "" '(nil :which-key "attachment")
+   "a" 'mu4e-view-attachment-action
+   "s" 'mu4e-view-save-attachment
+   "o" 'mu4e-view-open-attachment)
+
+
   ;; w		visual-line-mode
-  ;; x		mu4e-view-marked-execute
-  ;; y		mu4e-select-other-view
-  ;; z		ignore
   ;; |		mu4e-view-pipe
-  ;; DEL		scroll-down-command
-  ;; C-S-u		mu4e-update-mail-and-index
-  ;; S-SPC		scroll-down-command
-  ;; C-+		mu4e-headers-split-view-grow
-  ;; C--		mu4e-headers-split-view-shrink
-  ;; <C-kp-add>	mu4e-headers-split-view-grow
-  ;; <C-kp-subtract>			mu4e-headers-split-view-shrink
   ;; <M-down>	mu4e-view-headers-next
   ;; <M-left>	mu4e-headers-query-prev
   ;; <M-right>	mu4e-headers-query-next
   ;; <M-up>		mu4e-view-headers-prev
-  ;; <backspace>	mu4e-scroll-down
-  ;; <delete>	mu4e-view-mark-for-delete
-  ;; <deletechar>	mu4e-view-mark-for-delete
-  ;; <end>		end-of-buffer
-  ;; <home>		beginning-of-buffer
-  ;; <insert>	mu4e-view-mark-for-something
-  ;; <insertchar>	mu4e-view-mark-for-something
-  ;; <kp-multiply>	mu4e-view-mark-for-something
-  ;; <remap>		Prefix Command
-
-  ;; M-q		mu4e-view-fill-long-lines
 
   ;; C-c C-u		mu4e-update-mail-and-index
 
@@ -278,4 +281,70 @@
 
   )
 
+
+(use-package helm-mu
+  :ensure t
+  :init
+  (general-define-key
+   :keymaps 'mu4e-main-mode-map
+   "<f7> m s" 'helm-mu
+   "s" 'helm-mu
+   )
+  (general-define-key
+   :keymaps 'mu4e-headers-mode-map
+   "<f7> m s" 'helm-mu
+   "s" 'helm-mu
+   )
+  (general-define-key
+   :keymaps 'mu4e-view-mode-map
+   "<f7> m s" 'helm-mu
+   "s" 'helm-mu
+   )
+  )
+
+(use-package helm-org-contacts
+  :load-path "/home/guancio/emacs-test/private/helm-org-contacts"
+  :init
+  (setq org-contacts-files '("/home/guancio/Data/contacts.org"))
+  (defun helm-contacts-2 ()
+    (interactive
+     (helm :sources
+           '((name                           . "Contacts")
+             (multiline)
+             (candidates                     . helm-org-contacts-get-contacts)
+             (filtered-candidate-transformer . helm-org-contacts-candidate-transformer)
+             (action . (("Insert email address with name" . helm-org-contacts-insert-email-with-name)
+                        ("Insert address"    . helm-org-contacts-insert-address)
+                        ("Insert plain email address" . helm-org-contacts-insert-plain-email)
+                        ("Insert phone number" . helm-org-contacts-insert-phone-number)
+                        ("Show entry"        . helm-org-contacts-edit-entry))))
+           :candidate-number-limit 500)
+     ))
+  (general-define-key
+   :keymaps 'mu4e-compose-mode-map
+   "<f7> m <tab>" 'helm-contacts-2
+   )
+  (general-define-key
+   "<f7> a c" '(:ignore t :which-key "Contacts")
+   "<f7> a c s" 'helm-contacts-2
+   "<f7> a c f" (lambda ()(interactive)
+                  (find-file (car org-contacts-files))
+                  (widen)
+                  (show-all)
+                  )
+   )
+
+  )
+
+
+;; (defun helm-contacts ()
+;;   (interactive)
+;;   (helm :sources '(helm-source-org-contacts helm-source-mu-contacts)
+;;         :candidate-number-limit 500))
+
+;; (helm-mu-contacts)
+
+
 (provide 'g-mail)
+
+

@@ -209,7 +209,7 @@
   :init
   (general-define-key
    :keymaps 'dired-mode-map
-   :prefix "<f7> m"
+   :prefix "<f7> t"
    "s" '(:ignore t :which-key "Sort")
    "s s" 'dired-sort-size
    "s e" 'dired-sort-extension
@@ -217,17 +217,6 @@
    "s a" 'dired-sort-utime
    "s d" 'dired-sort-time
    "s n" 'dired-sort-name
-   )
-  (general-define-key
-   :keymaps 'dired-mode-map
-   :prefix "s"
-   "" '(nil :which-key "Sort")
-   "s" 'dired-sort-size
-   "e" 'dired-sort-extension
-   "c" 'dired-sort-ctime
-   "a" 'dired-sort-utime
-   "d" 'dired-sort-time
-   "n" 'dired-sort-name
    )
   )
 

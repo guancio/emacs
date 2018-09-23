@@ -13,8 +13,8 @@
   (setq moe-theme-highlight-buffer-id t)
     
   ;;(moe-dark)
-  (moe-light)
-  (powerline-moe-theme)
+;;  (moe-light)
+;;  (powerline-moe-theme)
   )
 
 ;; (use-package doom-themes

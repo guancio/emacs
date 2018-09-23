@@ -8,13 +8,16 @@
  "as"  'eshell
  "aS"  'eshell-new
  )
-(general-define-key
- :prefix "<f7>"
- :keymaps 'eshell-mode-mapm
- "<up>"  'helm-eshell-history
- )
 
-
+;; due to bug in eshell we cannot use a simple approach
+(add-hook 'eshell-mode-hook
+          (lambda ()
+            (general-define-key
+             :keymaps 'eshell-mode-map
+             :prefix "<f7>"
+             "<up>"  'helm-eshell-history
+             )
+            ))
 
 ;; does not work
 ;; (use-package esh-autosuggest
