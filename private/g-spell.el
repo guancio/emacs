@@ -11,6 +11,25 @@ auto-dictionary is not used, use the adict version otherwise."
     (interactive)
     (eww (concat "https://www.merriam-webster.com/dictionary/" (thing-at-point 'word))))
 
+
+(defhydra hydra-spelling (:color blue)
+  "
+  ^
+  ^Spelling^          ^Errors^            ^Checker^
+  ^────────^──────────^──────^────────────^───────^───────
+  _q_ quit            _p_ previous        _c_ correction
+  ^^                  _n_ next            _d_ dictionary
+  ^^                  _b_ buffer          ^^
+  ^^                  ^^                  ^^
+  "
+  ("q" nil)
+  ("p" evil-prev-flyspell-error :color pink)
+  ("n" evil-next-flyspell-error :color pink)
+  ("c" flyspell-correct-previous-word-generic)
+  ("d" spell-checking/change-dictionary)
+  ("b" flyspell-buffer))
+
+
 (use-package flyspell
   :ensure t
   :commands (flyspell-mode flyspell-prog-mode)
@@ -28,6 +47,7 @@ auto-dictionary is not used, use the adict version otherwise."
      "d" 'def-word
      "D" 'spell-checking/change-dictionary
      "n" 'flyspell-goto-next-error
+     "." 'hydra-spelling/body
     )
     (general-define-key
      :prefix "<f7> t"

@@ -74,6 +74,11 @@
  "=" 'dired-diff
  "C" 'dired-do-copy
  "D" 'dired-do-delete
+ "E" '((lambda () (interactive)
+         (progn
+           (setq helm-ff-default-directory (dired-current-directory))
+           (helm-ff-switch-to-eshell nil)))
+       :which-key "eshell")
  "G" 'dired-do-chgrp
  "H" 'dired-do-find-regexp-and-replace
  "L" 'dired-do-symlink
@@ -84,6 +89,7 @@
  "U" 'dired-unmark-all-marks
  "X" 'dired-do-shell-command
  "Z" '(dired-do-compress :which-key "(de)compress")
+ "a" 'gnus-dired-attach
  "d" 'dired-flag-file-deletion
  "e" 'dired-toggle-read-only
  "g" 'revert-buffer
@@ -91,12 +97,13 @@
  "k" '((lambda () (interactive) (dired-do-kill-lines t)) :which-key "remove")
  ;; does not show icons
  "i" 'dired-maybe-insert-subdir
- "m" 'dired-mark
+ "," 'dired-mark
  "q" 'quit-window
  "u" 'dired-unmark
  "x" 'dired-do-flagged-delete
  "z" 'dired-do-compress-to
  "y" 'dired-show-file-type
+ "w" 'dired-copy-filename-as-kill
  )
 
 (general-define-key
@@ -130,6 +137,7 @@
  "r u" 'dired-upcase
 )
 
+
 (general-define-key
  :keymaps 'dired-mode-map
  :prefix "<f7> m"
@@ -140,6 +148,11 @@
  "=" 'dired-diff
  "C" 'dired-do-copy
  "D" 'dired-do-delete
+ "E" '((lambda () (interactive)
+         (progn
+           (setq helm-ff-default-directory (dired-current-directory))
+           (helm-ff-switch-to-eshell nil)))
+       :which-key "eshell")
  "G" 'dired-do-chgrp
  "H" 'dired-do-find-regexp-and-replace
  "L" 'dired-do-symlink
@@ -150,6 +163,7 @@
  "U" 'dired-unmark-all-marks
  "X" 'dired-do-shell-command
  "Z" '(dired-do-compress :which-key "(de)compress")
+ "a" 'gnus-dired-attach
  "d" 'dired-flag-file-deletion
  "e" 'dired-toggle-read-only
  "g" 'revert-buffer
@@ -157,7 +171,7 @@
  "k" '((lambda () (interactive) (dired-do-kill-lines t)) :which-key "remove")
  ;; does not show icons
  "i" 'dired-maybe-insert-subdir
- "m" 'dired-mark
+ "." 'dired-mark
  "o" '(:ignore t :which-key "open")
  "o 1" 'g/find-select-window-1
  "o 2" 'g/find-select-window-2
@@ -174,7 +188,8 @@
  "x" 'dired-do-flagged-delete
  "z" 'dired-do-compress-to
  "y" 'dired-show-file-type
-
+ "w" 'dired-copy-filename-as-kill
+ 
  "r"  '(:ignore t :which-key "Regexp")
  "r &" 'dired-flag-garbage-files
  "r C" 'dired-do-copy-regexp
@@ -226,9 +241,26 @@
   (general-define-key
    :keymaps 'dired-mode-map
    :prefix "<f7> t"
-   "s" 'dired-du-mode
+   "D" 'dired-du-mode
    "r" 'dired-du--toggle-human-readable
   ))
+
+(require 'gnus-dired)
+;; make the `gnus-dired-mail-buffers' function also work on
+;; message-mode derived modes, such as mu4e-compose-mode
+(defun gnus-dired-mail-buffers ()
+  "Return a list of active message buffers."
+  (let (buffers)
+    (save-current-buffer
+      (dolist (buffer (buffer-list t))
+        (set-buffer buffer)
+        (when (and (derived-mode-p 'message-mode)
+                (null message-sent-message-via))
+          (push (buffer-name buffer) buffers))))
+    (nreverse buffers)))
+
+(setq gnus-dired-mail-mode 'mu4e-user-agent)
+(add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
 
 
 ;; (use-package sunrise-commander

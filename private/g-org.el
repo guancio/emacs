@@ -2,8 +2,6 @@
 
 (setq org-default-notes-file "~/Desktop/organizer.org")
 
-(add-hook 'org-mode-hook 'auto-fill-mode)
-
 (general-define-key
  :keymaps 'org-mode-map
  :prefix "<f7> m"
@@ -20,12 +18,6 @@
  :prefix "<f7> o"
  "c" 'org-capture
  "l" 'org-store-link
- )
-
-(general-define-key
- :prefix "<f7> t"
- :keymaps 'org-mode-map
- "f" 'auto-fill-mode
  )
 
 (use-package ox-reveal

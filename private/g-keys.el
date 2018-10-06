@@ -128,6 +128,9 @@ Version 2017-11-01"
 ;; open helm on the bottom
 (setq helm-default-display-buffer-functions '(display-buffer-in-side-window))
 (setq helm-swoop-split-direction 'split-window-horizontally)
+;; Otherwise eshell uses a new frame
+(setq helm-show-completion-display-function #'helm-show-completion-default-display-function)
+
 
 (helm-mode 1)
 

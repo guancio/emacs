@@ -46,6 +46,9 @@
   (setq message-kill-buffer-on-exit t)
 
   (setq mu4e-attachment-dir  "~/Downloads")
+
+  ;; to jump to folders using helm
+  (setq mu4e-completing-read-function 'completing-read)
   
   (general-define-key
    :prefix "<f7>"
@@ -175,6 +178,10 @@
    "t s" 'mu4e-headers-change-sorting
    "t r" 'mu4e-headers-toggle-include-related
    "t h" 'mu4e-view-toggle-html
+   "t a" (lambda ()(interactive)
+           (setq mu4e-view-show-addresses (not mu4e-view-show-addresses))
+           (mu4e-view-refresh)
+           )
    )
 
   (general-define-key
@@ -211,6 +218,13 @@
    "e" 'mu4e-view-search-edit
    "s" 'mu4e-headers-search
    )
+
+  (general-define-key
+   :keymaps 'mu4e-view-contacts-header-keymap
+   "<f7>mc" 'mu4e~view-copy-contact)
+  (general-define-key
+   :keymaps 'mu4e-view-contacts-header-keymap
+   "c" 'mu4e~view-copy-contact)
   
   (general-define-key
    :keymaps 'mu4e-view-mode-map
@@ -237,7 +251,6 @@
    "r" 'mu4e-view-mark-for-refile
    "u" 'mu4e-view-unmark
    "x" 'mu4e-view-marked-execute
-
    "e" 'mu4e-view-search-edit
    "s" 'mu4e-headers-search
    )

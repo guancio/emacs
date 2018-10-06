@@ -5,7 +5,7 @@
   :ensure t)
 
 (winner-mode t)
-
+(toggle-frame-maximized)
 
 (use-package winum
   :ensure t
@@ -170,40 +170,58 @@ _<backspace>_ cancel _<return>_uit
 
 
 
+;; (defun g/empty-left (&optional window)
+;;   (let ((w (if (eq window nil) (selected-window) window)))
+;;     (progn
+;;       (split-window w nil 'left)
+;;       (select-window (window-left-child (window-parent w)))
+;;       (set-window-buffer (selected-window) (get-buffer "*scratch*"))
+;;       (set-window-prev-buffers (selected-window) nil)
+;;       )))
+;; (defun g/empty-above (&optional window)
+;;   (let ((w (if (eq window nil) (selected-window) window)))
+;;     (progn
+;;       (split-window w nil 'above)
+;;       (select-window (window-top-child (window-parent w)))
+;;       (set-window-buffer (selected-window) (get-buffer "*scratch*"))
+;;       (set-window-prev-buffers (selected-window) nil)
+;;       )))
+;; (defun g/empty-right (&optional window)
+;;   (let ((w (if (eq window nil) (selected-window) window)))
+;;     (let ((w1 (split-window w nil 'right)))
+;;       (progn
+;; 	(select-window w1)
+;; 	(set-window-buffer w1 (get-buffer "*scratch*"))
+;; 	(set-window-prev-buffers w1 nil)))))
+;; (defun g/empty-below (&optional window)
+;;   (let ((w (if (eq window nil) (selected-window) window)))
+;;     (progn
+;;       (message (prin1-to-string w))
+;;       (split-window w nil 'below)
+;;       (windmove-down)
+;;       (set-window-buffer (selected-window) (get-buffer "*scratch*"))
+;;       (set-window-prev-buffers (selected-window) nil)
+;;       )))
 (defun g/empty-left (&optional window)
   (let ((w (if (eq window nil) (selected-window) window)))
-    (progn
-      (split-window w nil 'left)
-      (select-window (window-left-child (window-parent w)))
-      (set-window-buffer (selected-window) (get-buffer "*scratch*"))
-      (set-window-prev-buffers (selected-window) nil)
-      )))
+    (split-window w nil 'left)
+    (g/remove-selection)
+    ))
 (defun g/empty-above (&optional window)
   (let ((w (if (eq window nil) (selected-window) window)))
-    (progn
-      (split-window w nil 'above)
-      (select-window (window-top-child (window-parent w)))
-      (set-window-buffer (selected-window) (get-buffer "*scratch*"))
-      (set-window-prev-buffers (selected-window) nil)
-      )))
+    (split-window w nil 'above)
+    (g/remove-selection)
+    ))
 (defun g/empty-right (&optional window)
   (let ((w (if (eq window nil) (selected-window) window)))
-    (let ((w1 (split-window w nil 'right)))
-      (progn
-	(select-window w1)
-	(set-window-buffer w1 (get-buffer "*scratch*"))
-	(set-window-prev-buffers w1 nil)))))
+    (split-window w nil 'right)
+    (g/remove-selection)
+    ))
 (defun g/empty-below (&optional window)
   (let ((w (if (eq window nil) (selected-window) window)))
-    (progn
-      (message (prin1-to-string w))
-      (split-window w nil 'below)
-      (windmove-down)
-      (set-window-buffer (selected-window) (get-buffer "*scratch*"))
-      (set-window-prev-buffers (selected-window) nil)
-      )))
-
-
+    (split-window w nil 'below)
+    (g/remove-selection)
+    ))
 
 (setq last-selected nil)
 
@@ -260,10 +278,10 @@ Split-empty  ^Hierarchy^
 ←↓→             s
 _<backspace>_ cancel _<return>_uit
 "
-  ("<left>" (g/empty-left last-selected))
-  ("<right>" (g/empty-right last-selected))
-  ("<up>" (g/empty-above last-selected))
-  ("<down>" (g/empty-below last-selected))
+  ("<left>" ( g/empty-left last-selected) :exit t)
+  ("<right>" (g/empty-right last-selected) :exit t)
+  ("<up>" (g/empty-above last-selected) :exit t)
+  ("<down>" (g/empty-below last-selected) :exit t)
   ("w" g/up-selection)
   ("s" g/remove-selection)
   ;; left
