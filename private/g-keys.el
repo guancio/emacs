@@ -9,9 +9,12 @@
       (revert-buffer :ignore-auto :noconfirm)
     (revert-buffer :ignore-auto)))
 
+;; (defun start-emacs ()
+;;   (interactive)
+;;   (start-process-shell-command "emacs" "*emacs*" "setsid" "sh" "/home/guancio/emacs-test/run.sh"))
 (defun start-emacs ()
   (interactive)
-  (start-process-shell-command "emacs" "*emacs*" "setsid" "sh" "/home/guancio/emacs-test/run.sh"))
+  (start-process-shell-command "emacs" "*emacs*" "setsid" "emacs26"))
 
 
 
@@ -50,6 +53,9 @@ Version 2017-11-01"
 (setq initial-major-mode (quote text-mode))
 
 (use-package helm
+  :ensure t
+  )
+(use-package helm-swoop
   :ensure t
   )
 

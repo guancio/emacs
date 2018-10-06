@@ -28,9 +28,11 @@ auto-dictionary is not used, use the adict version otherwise."
      "d" 'def-word
      "D" 'spell-checking/change-dictionary
      "n" 'flyspell-goto-next-error
-     "t" '(flyspell-mode :which-key "toggle")
-     ;; order alphabetically
-     "T" '(flyspell-prog-mode :which-key "toggle-prog"))
+    )
+    (general-define-key
+     :prefix "<f7> t"
+     "S" '(flyspell-mode :which-key "spelling")
+     "T" '(flyspell-prog-mode :which-key "prog-spelling"))
     )
   )
 (use-package flyspell-correct

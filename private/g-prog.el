@@ -8,7 +8,7 @@
 
 (use-package helm-xref
   :ensure t
-  :commands (xref-find-references)
+  :commands (helm-xref-show-xrefs)
   :init
   (setq xref-show-xrefs-function 'helm-xref-show-xrefs)
   )

@@ -297,42 +297,47 @@
      "s" 'helm-mu
      )
     )
+
+  
   )
 
 
+;; It should be defered
+(use-package helm-org-contacts
+  :load-path "/home/guancio/emacs-test/private/helm-org-contacts/"
+  :init
+  (setq org-contacts-files '("/home/guancio/Data/contacts.org"))
+  
+  (defun helm-contacts-2 ()
+    (interactive
+     (helm :sources
+           '((name                           . "Contacts")
+             (multiline)
+             (candidates                     . helm-org-contacts-get-contacts)
+             (filtered-candidate-transformer . helm-org-contacts-candidate-transformer)
+             (action . (("Insert email address with name" . helm-org-contacts-insert-email-with-name)
+                        ("Insert address"    . helm-org-contacts-insert-address)
+                        ("Insert plain email address" . helm-org-contacts-insert-plain-email)
+                        ("Insert phone number" . helm-org-contacts-insert-phone-number)
+                        ("Show entry"        . helm-org-contacts-edit-entry))))
+           :candidate-number-limit 500)
+     ))
+  (general-define-key
+   :keymaps 'mu4e-compose-mode-map
+   "<f7> m <tab>" 'helm-contacts-2
+   )
+  (general-define-key
+   "<f7> a c" '(:ignore t :which-key "Contacts")
+   "<f7> a c s" 'helm-contacts-2
+   "<f7> a c f" (lambda ()(interactive)
+                  (find-file (car org-contacts-files))
+                  (widen)
+                  (show-all)
+                  )
+   )
+  )
 
-;; (use-package helm-org-contacts
-;;   :load-path "/home/guancio/emacs-test/private/helm-org-contacts/"
-;;   :init
-;;   (setq org-contacts-files '("/home/guancio/Data/contacts.org"))
-;;   (defun helm-contacts-2 ()
-;;     (interactive
-;;      (helm :sources
-;;            '((name                           . "Contacts")
-;;              (multiline)
-;;              (candidates                     . helm-org-contacts-get-contacts)
-;;              (filtered-candidate-transformer . helm-org-contacts-candidate-transformer)
-;;              (action . (("Insert email address with name" . helm-org-contacts-insert-email-with-name)
-;;                         ("Insert address"    . helm-org-contacts-insert-address)
-;;                         ("Insert plain email address" . helm-org-contacts-insert-plain-email)
-;;                         ("Insert phone number" . helm-org-contacts-insert-phone-number)
-;;                         ("Show entry"        . helm-org-contacts-edit-entry))))
-;;            :candidate-number-limit 500)
-;;      ))
-;;   (general-define-key
-;;    :keymaps 'mu4e-compose-mode-map
-;;    "<f7> m <tab>" 'helm-contacts-2
-;;    )
-;;   (general-define-key
-;;    "<f7> a c" '(:ignore t :which-key "Contacts")
-;;    "<f7> a c s" 'helm-contacts-2
-;;    "<f7> a c f" (lambda ()(interactive)
-;;                   (find-file (car org-contacts-files))
-;;                   (widen)
-;;                   (show-all)
-;;                   )
-;;    )
-;;   )
+
 
 
 ;; (defun helm-contacts ()
