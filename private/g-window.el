@@ -6,6 +6,28 @@
 
 (winner-mode t)
 
+
+(use-package winum
+  :ensure t
+  :config
+  ;; (setq winum-scope 'frame-local
+  ;;       winum-ignored-buffers '(" *which-key*"))
+  (general-define-key
+   :prefix "<f7>"
+   "0" 'winum-select-window-0-or-10
+   "1" 'winum-select-window-1
+   "2" 'winum-select-window-2
+   "3" 'winum-select-window-3
+   "4" 'winum-select-window-4
+   "5" 'winum-select-window-5
+   "6" 'winum-select-window-6
+   "7" 'winum-select-window-7
+   "8" 'winum-select-window-8
+   "9" 'winum-select-window-9)
+  (winum-mode)
+  )
+
+
 ;; Moving Buffers
 ;; Copied from buffer-move
 ;; when we move a buffer, we should also remove it from the list

@@ -15,18 +15,9 @@
 
 
 
-(defun g-toggle-dark-light ()
-  (interactive)
-  ;; use a property “state”. Value is t or nil
-  (if (get 'g-toggle-dark-light 'state)
-      (progn
-        (moe-light)
-        (put 'g-toggle-dark-light 'state nil))
-    (progn
-        (moe-dark)
-        (put 'g-toggle-dark-light 'state t))))
 
-
+(use-package hydra
+  :ensure t)
 (defhydra guancio-zoom ()
   "
 Zoom
@@ -58,6 +49,9 @@ Version 2017-11-01"
     ))
 (setq initial-major-mode (quote text-mode))
 
+(use-package helm
+  :ensure t
+  )
 
 (use-package general
   :ensure t
@@ -83,9 +77,9 @@ Version 2017-11-01"
      "fS" 'write-file
      "g"  '(:ignore t :which-key "Go")
      "gi" 'helm-imenu
+     "gl" 'goto-line
      ;; does not work
      ;; "ga" 'xref-find-apropos
-     "G"  'magit-status
      "h"  '(:ignore t :which-key "Help")
      "h k" 'describe-key
      "h K" 'which-key-show-top-level
@@ -105,11 +99,17 @@ Version 2017-11-01"
      "x" 'helm-M-x
      ;; company / company with doc
      )
+    (setq scroll-preserve-screen-position 1)
     (general-define-key
-     "C-y" 'undo-tree-redo)
+     "C-y" 'undo-tree-redo
+     "M-<up>" (lambda ()(interactive) (scroll-down-command 1))
+     "M-<down>" (lambda ()(interactive) (scroll-up-command 1))
+     )
     ))
 (global-set-key (kbd "M-x") #'helm-M-x)
 (global-set-key (kbd "C-S-v") #'helm-show-kill-ring)
+
+
 
 (use-package which-key :ensure t
   :config
@@ -127,11 +127,11 @@ Version 2017-11-01"
 
 (use-package disable-mouse
   :ensure t
+  :commands (global-disable-mouse-mode)
   :init
   (general-define-key
    :prefix "<f7> t"
-   "M"  'global-disable-mouse-mode
-   "l"  'g-toggle-dark-light)
+   "M"  'global-disable-mouse-mode)
 )
 
 

@@ -8,15 +8,18 @@
  :keymaps 'org-mode-map
  :prefix "<f7> m"
  "e p" 'org-latex-export-to-pdf
+ "e h" 'org-html-export-to-html
  "-" 'org-shiftleft
  "=" 'org-shiftright
  "r" 'org-refile
+ "l" 'org-insert-link
  ;; what to do with the other 2000 keymaps?
  )
 
 (general-define-key
  :prefix "<f7> o"
  "c" 'org-capture
+ "l" 'org-store-link
  )
 
 (general-define-key

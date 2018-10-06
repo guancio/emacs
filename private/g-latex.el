@@ -57,13 +57,15 @@ the automatic filling of the current paragraph."
     (add-hook 'LaTeX-mode-hook 'flyspell-mode)
     (add-hook 'LaTeX-mode-hook 'flyspell-buffer)
 
-    (defun latex-spell-hook ()
-      (make-local-variable 'company-backends)
-      ;; company-ispell is the plugin to complete words
-      (add-to-list 'company-backends 'company-ispell)
-      (company-mode)
-      )
-    (add-hook 'LaTeX-mode-hook 'latex-spell-hook)
+    (use-package company
+      :config
+      (defun latex-spell-hook ()
+        (make-local-variable 'company-backends)
+        ;; company-ispell is the plugin to complete words
+        (add-to-list 'company-backends 'company-ispell)
+        (company-mode)
+        )
+      (add-hook 'LaTeX-mode-hook 'latex-spell-hook))
 
 
     

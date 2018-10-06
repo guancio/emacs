@@ -51,6 +51,7 @@
    :prefix "<f7>"
    "am"  '(mu4e :which-key "e-mail"))
 
+  :config
   (general-define-key
    :prefix "<f7>"
    :keymaps 'mu4e-main-mode-map
@@ -271,70 +272,67 @@
    )
   ;; better autocompletition
 
-
-
   (setq mu4e-html2text-command 'mu4e-shr2text)
   (setq shr-color-visible-luminance-min 60)
   (setq shr-color-visible-distance-min 5)
   (setq shr-use-colors nil)
   (advice-add #'shr-colorize-region :around (defun shr-no-colourise-region (&rest ignore)))
 
+  (use-package helm-mu
+    :ensure t
+    :init
+    (general-define-key
+     :keymaps 'mu4e-main-mode-map
+     "<f7> m s" 'helm-mu
+     "s" 'helm-mu
+     )
+    (general-define-key
+     :keymaps 'mu4e-headers-mode-map
+     "<f7> m s" 'helm-mu
+     "s" 'helm-mu
+     )
+    (general-define-key
+     :keymaps 'mu4e-view-mode-map
+     "<f7> m s" 'helm-mu
+     "s" 'helm-mu
+     )
+    )
   )
 
 
-(use-package helm-mu
-  :ensure t
-  :init
-  (general-define-key
-   :keymaps 'mu4e-main-mode-map
-   "<f7> m s" 'helm-mu
-   "s" 'helm-mu
-   )
-  (general-define-key
-   :keymaps 'mu4e-headers-mode-map
-   "<f7> m s" 'helm-mu
-   "s" 'helm-mu
-   )
-  (general-define-key
-   :keymaps 'mu4e-view-mode-map
-   "<f7> m s" 'helm-mu
-   "s" 'helm-mu
-   )
-  )
 
-(use-package helm-org-contacts
-  :load-path "/home/guancio/emacs-test/private/helm-org-contacts"
-  :init
-  (setq org-contacts-files '("/home/guancio/Data/contacts.org"))
-  (defun helm-contacts-2 ()
-    (interactive
-     (helm :sources
-           '((name                           . "Contacts")
-             (multiline)
-             (candidates                     . helm-org-contacts-get-contacts)
-             (filtered-candidate-transformer . helm-org-contacts-candidate-transformer)
-             (action . (("Insert email address with name" . helm-org-contacts-insert-email-with-name)
-                        ("Insert address"    . helm-org-contacts-insert-address)
-                        ("Insert plain email address" . helm-org-contacts-insert-plain-email)
-                        ("Insert phone number" . helm-org-contacts-insert-phone-number)
-                        ("Show entry"        . helm-org-contacts-edit-entry))))
-           :candidate-number-limit 500)
-     ))
-  (general-define-key
-   :keymaps 'mu4e-compose-mode-map
-   "<f7> m <tab>" 'helm-contacts-2
-   )
-  (general-define-key
-   "<f7> a c" '(:ignore t :which-key "Contacts")
-   "<f7> a c s" 'helm-contacts-2
-   "<f7> a c f" (lambda ()(interactive)
-                  (find-file (car org-contacts-files))
-                  (widen)
-                  (show-all)
-                  )
-   )
-
-  )
+;; (use-package helm-org-contacts
+;;   :load-path "/home/guancio/emacs-test/private/helm-org-contacts/"
+;;   :init
+;;   (setq org-contacts-files '("/home/guancio/Data/contacts.org"))
+;;   (defun helm-contacts-2 ()
+;;     (interactive
+;;      (helm :sources
+;;            '((name                           . "Contacts")
+;;              (multiline)
+;;              (candidates                     . helm-org-contacts-get-contacts)
+;;              (filtered-candidate-transformer . helm-org-contacts-candidate-transformer)
+;;              (action . (("Insert email address with name" . helm-org-contacts-insert-email-with-name)
+;;                         ("Insert address"    . helm-org-contacts-insert-address)
+;;                         ("Insert plain email address" . helm-org-contacts-insert-plain-email)
+;;                         ("Insert phone number" . helm-org-contacts-insert-phone-number)
+;;                         ("Show entry"        . helm-org-contacts-edit-entry))))
+;;            :candidate-number-limit 500)
+;;      ))
+;;   (general-define-key
+;;    :keymaps 'mu4e-compose-mode-map
+;;    "<f7> m <tab>" 'helm-contacts-2
+;;    )
+;;   (general-define-key
+;;    "<f7> a c" '(:ignore t :which-key "Contacts")
+;;    "<f7> a c s" 'helm-contacts-2
+;;    "<f7> a c f" (lambda ()(interactive)
+;;                   (find-file (car org-contacts-files))
+;;                   (widen)
+;;                   (show-all)
+;;                   )
+;;    )
+;;   )
 
 
 ;; (defun helm-contacts ()

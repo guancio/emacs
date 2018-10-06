@@ -4,4 +4,6 @@
 
 (cua-mode t)
 
+(require 'uniquify)
+
 (provide 'g-general-edit)

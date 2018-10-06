@@ -3,12 +3,34 @@
 (toggle-scroll-bar -1)
 (tool-bar-mode -1)
 
-(use-package powerline
-  :ensure t
-  )
+;; (use-package powerline
+;;   :ensure t
+;;   )
+;; (use-package spaceline
+;;   :ensure t
+;;   :config
+;;   (spaceline-emacs-theme)
+;;   (spaceline-helm-mode)
+;;   )
+
+(defun g-toggle-dark-light ()
+  (interactive)
+  ;; use a property “state”. Value is t or nil
+  (if (get 'g-toggle-dark-light 'state)
+      (progn
+        (load-theme 'default t)
+        (put 'g-toggle-dark-light 'state nil))
+    (progn
+        (moe-dark)
+        (put 'g-toggle-dark-light 'state t))))
+
+(general-define-key
+ :prefix "<f7> t"
+ "l"  'g-toggle-dark-light)
 
 (use-package moe-theme
   :ensure t
+  :commands (moe-dark)
   :config
   (setq moe-theme-highlight-buffer-id t)
     
@@ -56,32 +78,7 @@
   (solaire-mode-swap-bg)
   )
 
-(use-package winum
-  :ensure t
-  :config
-  (setq winum-scope 'frame-local
-	winum-ignored-buffers '(" *which-key*"))
-  (general-define-key
-   :prefix "<f7>"
-   "0" 'winum-select-window-0-or-10
-   "1" 'winum-select-window-1
-   "2" 'winum-select-window-2
-   "3" 'winum-select-window-3
-   "4" 'winum-select-window-4
-   "5" 'winum-select-window-5
-   "6" 'winum-select-window-6
-   "7" 'winum-select-window-7
-   "8" 'winum-select-window-8
-   "9" 'winum-select-window-9)
-  (winum-mode)
-  )
 
-;; (use-package spaceline
-;;   :ensure t
-;;   :config
-;;   (spaceline-emacs-theme)
-;;   (spaceline-helm-mode)
-;;   )
 
 
 (provide 'g-theme)
