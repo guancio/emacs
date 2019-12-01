@@ -63,47 +63,136 @@
 
 (add-hook 'dired-mode-hook 'my-dired-mode-hook)
 
+(use-package wuxch-dired-copy-paste
+  :load-path "/home/guancio/emacs-test/private/wuxch-dired-copy-paste/"
+  )
+
+(defhydra hydra-dired (:hint nil :color blue)
+  "
+Navigation^^    | Mark^^         | Actions ^^     ^^               ^^         | Shell^^    | Open   | Regexp^^                      Others
+----------^^----+-----^^---------+---------^^-----^^---------------^^-------- +------^^----+--------+-------^^------------------------------------------
+_q_ quit        | _._ mark       | _+_ new dir    _G_ chgrp        _x_ cut    | _&_ async  | ↩ here | mark^^        actions^^         _y_ type      
+_g_ revert      | _u_ unmark     | _C_ do copy    _O_ chown        _c_ copy   | _!_ sync   | o N    | _rg_ contain  _rC_ copy           _w_ copy name 
+^↩^ up          | _U_ unmark all | _D_ do delete  _M_ chmod        _v_ paste  | _E_ eshell |        | _rm_ regexp   _rH_ hardlink          _S_ search 
+^⇄^ toggle      | ^ ^            | _L_ link       _Z_ (de)compress ^ ^        | ^ ^        |        | ^  ^          _rL_ link          _=_ diff   
+_k_ remove line | ^ ^            | _R_ move       _z_ compress to  ^ ^        | ^ ^        |        | ^  ^          _rR_ move          _e_ edit 
+_i_ insert dir  | ^ ^            | ^ ^            _a_ attach       ^ ^        | ^ ^        |        |
+"
+  ("g" revert-buffer :exit nil)
+  ("q" quit-window)
+  ("<backspace>" dired-up-directory :exit nil)
+  ("<tab>" dired-hide-subdir :exit nil)
+  ("k" (lambda () (interactive) (dired-do-kill-lines t)) :exit nil)
+  ("i" dired-maybe-insert-subdir :exit nil)
+  ("+" dired-create-directory :exit nil)
+  ("C" dired-do-copy :exit nil)
+  ("D" dired-do-delete :exit nil)
+  ("L" dired-do-symlink :exit nil)
+  ("R" dired-do-rename :exit nil)
+  ("." dired-mark :exit nil)
+  ("u" dired-unmark :exit nil)
+  ("U" dired-unmark-all-marks :exit nil)
+  ("G" dired-do-chgrp :exit nil)
+  ("M" dired-do-chmod :exit nil)
+  ("O" dired-do-chown :exit nil)
+  ("&" dired-do-async-shell-command :exit nil)
+  ("E" ((lambda () (interactive))
+         (progn
+           (setq helm-ff-default-directory (dired-current-directory))
+           (helm-ff-switch-to-eshell nil))))
+  ("!" dired-do-shell-command :exit nil)
+  ("Z" dired-do-compress :exit nil)
+  ("z" dired-do-compress-to :exit nil)
+  ("a" gnus-dired-attach :exit nil)
+
+  ("c" wuxch-dired-copy :exit nil)
+  ("x" wuxch-dired-cut :exit nil)
+  ("v" wuxch-dired-paste :exit nil)
+
+  ("y" dired-show-file-type :exit nil)
+  ("w" dired-copy-filename-as-kill :exit nil)
+  ("S" dired-do-find-regexp :exit nil)
+  ("=" dired-diff :exit nil)
+  ("e" dired-toggle-read-only :exit nil)
+  ("<RET>" dired-find-file)
+  ("o1" g/find-select-window-1 :exit nil) 
+  ("o2" g/find-select-window-2 :exit nil) 
+  ("o3" g/find-select-window-3 :exit nil) 
+  ("o4" g/find-select-window-4 :exit nil) 
+  ("o5" g/find-select-window-5 :exit nil) 
+  ("o6" g/find-select-window-6 :exit nil) 
+  ("o7" g/find-select-window-7 :exit nil) 
+  ("o8" g/find-select-window-8 :exit nil) 
+  ("o9" g/find-select-window-9 :exit nil) 
+
+  ("rC" dired-do-copy-regexp :exit nil) 
+  ("rH" dired-do-hardlink-regexp :exit nil) 
+  ("rR" dired-do-rename-regexp :exit nil) 
+  ("rL" dired-do-symlink-regexp :exit nil) 
+  ("rg" dired-mark-files-containing-regexp :exit nil) 
+  ("rm" dired-mark-files-regexp :exit nil) 
+
+  ("<up>" dired-previous-line :exit nil)
+  ("<down>" dired-next-line :exit nil)
+  ("<f7>m" nil)
+  )
+;;  "H" 'dired-do-find-regexp-and-replace
+;; ("d" dired-flag-file-deletion)
+;; ("X" dired-do-flagged-delete)
+  ;; ("r &" dired-flag-garbage-files)
+
+(general-define-key
+ :keymaps 'dired-mode-map
+ :prefix "<f7>"
+ "m" 'hydra-dired/body)
+ 
 
 ;; TODO: avoid repetition
 (general-define-key
  :keymaps 'dired-mode-map
- "<backspace>" 'dired-up-directory
- "<tab>" 'dired-hide-subdir
- "&" 'dired-do-async-shell-command
- "+" 'dired-create-directory
- "=" 'dired-diff
- "C" 'dired-do-copy
- "D" 'dired-do-delete
- "E" '((lambda () (interactive)
+  "G" 'revert-buffer
+  "q" 'quit-window
+  "<backspace>" 'dired-up-directory
+  "<tab>" 'dired-hide-subdir
+  ;;
+   "i" 'previous-line
+   "j" 'left-char
+   "k" 'next-line
+   "l" 'right-char
+   ;;
+  "k" (lambda () (interactive) (dired-do-kill-lines t))
+  ;;"i" 'dired-maybe-insert-subdir
+  ;; goto file
+  "+" 'dired-create-directory
+  "C" 'dired-do-copy
+  "D" 'dired-do-delete
+  "L" 'dired-do-symlink
+  "R" 'dired-do-rename
+  "." 'dired-mark
+  "u" 'dired-unmark
+  "U" 'dired-unmark-all-marks
+  "G" 'dired-do-chgrp
+  "M" 'dired-do-chmod
+  "O" 'dired-do-chown
+  "&" 'dired-do-async-shell-command
+  "E" (lambda () (interactive)
          (progn
            (setq helm-ff-default-directory (dired-current-directory))
            (helm-ff-switch-to-eshell nil)))
-       :which-key "eshell")
- "G" 'dired-do-chgrp
- "H" 'dired-do-find-regexp-and-replace
- "L" 'dired-do-symlink
- "M" 'dired-do-chmod
- "O" 'dired-do-chown
- "R" 'dired-do-rename
- "S" 'dired-do-find-regexp
- "U" 'dired-unmark-all-marks
- "X" 'dired-do-shell-command
- "Z" '(dired-do-compress :which-key "(de)compress")
- "a" 'gnus-dired-attach
- "d" 'dired-flag-file-deletion
- "e" 'dired-toggle-read-only
- "g" 'revert-buffer
- "h" 'describe-mode
- "k" '((lambda () (interactive) (dired-do-kill-lines t)) :which-key "remove")
- ;; does not show icons
- "i" 'dired-maybe-insert-subdir
- "," 'dired-mark
- "q" 'quit-window
- "u" 'dired-unmark
- "x" 'dired-do-flagged-delete
- "z" 'dired-do-compress-to
- "y" 'dired-show-file-type
- "w" 'dired-copy-filename-as-kill
+  "!" 'dired-do-shell-command
+  "Z" 'dired-do-compress
+  "z" 'dired-do-compress-to
+  "a" 'gnus-dired-attach
+
+  "c" 'wuxch-dired-copy
+  "x" 'wuxch-dired-cut
+  "v" 'wuxch-dired-paste
+
+  "y" 'dired-show-file-type
+  "w" 'dired-copy-filename-as-kill
+  "S" 'dired-do-find-regexp
+  "=" 'dired-diff
+  "e" 'dired-toggle-read-only
  )
 
 (general-define-key
@@ -124,91 +213,25 @@
  :keymaps 'dired-mode-map
  :prefix "r"
  "" '(nil :which-key "Regexp")
- "r &" 'dired-flag-garbage-files
  "r C" 'dired-do-copy-regexp
  "r H" 'dired-do-hardlink-regexp
  "r R" 'dired-do-rename-regexp
- "r S" 'dired-do-symlink-regexp
- "r d" 'dired-flag-files-regexp
+ "r L" 'dired-do-symlink-regexp
  "r g" 'dired-mark-files-containing-regexp
- "r l" 'dired-downcase
  "r m" 'dired-mark-files-regexp
- "r r" 'dired-do-rename-regexp
- "r u" 'dired-upcase
 )
+ ;; "r &" 'dired-flag-garbage-files
+ ;; "r d" 'dired-flag-files-regexp
+ ;; "r l" 'dired-downcase
+ ;; "r u" 'dired-upcase
 
 
-(general-define-key
- :keymaps 'dired-mode-map
- :prefix "<f7> m"
- "<backspace>" 'dired-up-directory
- "<tab>" 'dired-hide-subdir
- "&" 'dired-do-async-shell-command
- "+" 'dired-create-directory
- "=" 'dired-diff
- "C" 'dired-do-copy
- "D" 'dired-do-delete
- "E" '((lambda () (interactive)
-         (progn
-           (setq helm-ff-default-directory (dired-current-directory))
-           (helm-ff-switch-to-eshell nil)))
-       :which-key "eshell")
- "G" 'dired-do-chgrp
- "H" 'dired-do-find-regexp-and-replace
- "L" 'dired-do-symlink
- "M" 'dired-do-chmod
- "O" 'dired-do-chown
- "R" 'dired-do-rename
- "S" 'dired-do-find-regexp
- "U" 'dired-unmark-all-marks
- "X" 'dired-do-shell-command
- "Z" '(dired-do-compress :which-key "(de)compress")
- "a" 'gnus-dired-attach
- "d" 'dired-flag-file-deletion
- "e" 'dired-toggle-read-only
- "g" 'revert-buffer
- "h" 'describe-mode
- "k" '((lambda () (interactive) (dired-do-kill-lines t)) :which-key "remove")
- ;; does not show icons
- "i" 'dired-maybe-insert-subdir
- "." 'dired-mark
- "o" '(:ignore t :which-key "open")
- "o 1" 'g/find-select-window-1
- "o 2" 'g/find-select-window-2
- "o 3" 'g/find-select-window-3
- "o 4" 'g/find-select-window-4
- "o 5" 'g/find-select-window-5
- "o 6" 'g/find-select-window-6
- "o 7" 'g/find-select-window-7
- "o 8" 'g/find-select-window-8
- "o 9" 'g/find-select-window-9
- 
- "q" 'quit-window
- "u" 'dired-unmark
- "x" 'dired-do-flagged-delete
- "z" 'dired-do-compress-to
- "y" 'dired-show-file-type
- "w" 'dired-copy-filename-as-kill
- 
- "r"  '(:ignore t :which-key "Regexp")
- "r &" 'dired-flag-garbage-files
- "r C" 'dired-do-copy-regexp
- "r H" 'dired-do-hardlink-regexp
- "r R" 'dired-do-rename-regexp
- "r S" 'dired-do-symlink-regexp
- "r d" 'dired-flag-files-regexp
- "r g" 'dired-mark-files-containing-regexp
- "r l" 'dired-downcase
- "r m" 'dired-mark-files-regexp
- "r r" 'dired-do-rename-regexp
- "r u" 'dired-upcase
- )
 
 (general-define-key
  :keymaps 'wdired-mode-map
  :prefix "<f7> m"
  "b" 'wdired-finish-edit
-)
+ )
 
 (general-define-key
  :keymaps 'dired-mode-map
@@ -241,9 +264,10 @@
   (general-define-key
    :keymaps 'dired-mode-map
    :prefix "<f7> t"
-   "D" 'dired-du-mode
+   "D" '(dired-du-mode :which-key "Du (SLOW)")
    "r" 'dired-du--toggle-human-readable
   ))
+
 
 (require 'gnus-dired)
 ;; make the `gnus-dired-mail-buffers' function also work on
@@ -262,8 +286,5 @@
 (setq gnus-dired-mail-mode 'mu4e-user-agent)
 (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
 
-
-;; (use-package sunrise-commander
-;;   :load-path "/home/guancio/emacs-test/private/sunrise-commander")
 
 (provide 'g-dired)

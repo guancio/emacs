@@ -4,6 +4,12 @@
 (use-package hydra
   :ensure t)
 
+(use-package eyebrowse
+  :ensure t
+  :config
+  (eyebrowse-mode t))
+
+
 (winner-mode t)
 (toggle-frame-maximized)
 
@@ -341,52 +347,66 @@ _<backspace>_ cancel _<return>_uit
  "q" 'g/kill-buffer-may-delete-window)
 
 
-(defhydra guancio-window ()
+(defhydra guancio-window (:hint nil :color blue)
   "
-Move 
-----------------------------------------------------------------
- ↑       _r_esize    
-←↓→      _s_plit     _d_elete         _b_uffer list
-0..9     _m_ove      _q_ kill buffer  
-_z_ undo   _u_ redo  delete _o_thers
-_<backspace>_ _<return>_ cancel 
+Move   | Subactions ^^ | Delete ^^   | CUA ^^^^^^           | Workspace ^^          ^^    ^^         |_<backspace>_ _<return>_ _<f7>w_ cancel 
+-------+------------^^-+--------^^---+-----^^^^^^-----------+-----------^^------------^^--^^---------+---------------------------------------
+ ↑     | _r_esize      | _d_ window  | _z_/_u_ undo/redo ^^ | _C_ create  _w_ list      _`_ rename   | _b_ buffers
+←↓→    | _s_plit       | _q_ buffer  | _x_/_c_/_v_          | _D_ delete  [] prev/next ^^ ^^ ^^      | _a_ maximize
+0..9   | _m_ove	    ^^ | _o_ others  | ^^^^^^               | S-1..9 ^^   <tab> last   ^^ ^^         | _f_ find file
 "
-  ("<left>" windmove-left )
-  ("<down>" windmove-down )
-  ("<up>" windmove-up )
-  ("<right>" windmove-right )
-  
+  ("<left>" windmove-left :exit nil)
+  ("<down>" windmove-down :exit nil)
+  ("<up>" windmove-up :exit nil)
+  ("<right>" windmove-right :exit nil)
   ("r" g/open-resize
     :exit t)
   ("s" (guancio-split/body)
     :exit t)
   ("m" (guancio-move/body)
    :exit t)
-  
   ("a" toggle-frame-maximized)
-
-  ("0" winum-select-window-0-or-10)
-  ("1" winum-select-window-1)
-  ("2" winum-select-window-2)
-  ("3" winum-select-window-3)
-  ("4" winum-select-window-4)
-  ("5" winum-select-window-5)
-  ("6" winum-select-window-6)
-  ("7" winum-select-window-7)
-  ("8" winum-select-window-8)
-  ("9" winum-select-window-9)
-
-  ("d" delete-window)
-  ("q" g/kill-buffer-may-delete-window)
-  ("b" helm-mini)
-  ("f" helm-find-files)
-  ("z" winner-undo)
-  ("u" winner-redo)
-  ("o" delete-other-windows)
-  ;; ("n" exwm-workspace-move-window)
+  ("0" winum-select-window-0-or-10 :exit nil)
+  ("1" winum-select-window-1 :exit nil)
+  ("2" winum-select-window-2 :exit nil)
+  ("3" winum-select-window-3 :exit nil)
+  ("4" winum-select-window-4 :exit nil)
+  ("5" winum-select-window-5 :exit nil)
+  ("6" winum-select-window-6 :exit nil)
+  ("7" winum-select-window-7 :exit nil)
+  ("8" winum-select-window-8 :exit nil)
+  ("9" winum-select-window-9 :exit nil)
+  ("d" delete-window :exit nil)
+  ("q" g/kill-buffer-may-delete-window :exit nil)
+  ("b" helm-mini :exit nil)
+  ("f" helm-find-files :exit nil)
+  ("z" winner-undo :exit nil)
+  ("u" winner-redo :exit nil)
+  ("o" delete-other-windows :exit nil)
+  ("c" g/copy-window :exit nil)
+  ("x" g/cut-window :exit nil)
+  ("v" g/paste-window :exit nil)
+  ("C" eyebrowse-create-window-config :exit nil)
+  ("D" eyebrowse-close-window-config :exit nil)
+  (")" eyebrowse-switch-to-window-config-0 :exit nil)
+  ("!" eyebrowse-switch-to-window-config-1 :exit nil)
+  ("@" eyebrowse-switch-to-window-config-2 :exit nil)
+  ("#" eyebrowse-switch-to-window-config-3 :exit nil)
+  ("$" eyebrowse-switch-to-window-config-4 :exit nil)
+  ("%" eyebrowse-switch-to-window-config-5 :exit nil)
+  ("^" eyebrowse-switch-to-window-config-6 :exit nil)
+  ("&" eyebrowse-switch-to-window-config-7 :exit nil)
+  ("*" eyebrowse-switch-to-window-config-8 :exit nil)
+  ("(" eyebrowse-switch-to-window-config-9 :exit nil)
+  ("<tab>" eyebrowse-last-window-config :exit nil)
+  ("[" eyebrowse-prev-window-config :exit nil)
+  ("]" eyebrowse-next-window-config :exit nil)
+  ("w" eyebrowse-switch-to-window-config :exit nil)
+  ("`" eyebrowse-rename-window-config :exit nil)
   ("<backspace>" nil)
   ("<return>" nil)
-  )  
+  ("<f7>w" nil)
+  )
 
 (general-define-key
  "<s-left>" 'evil-window-left
@@ -397,6 +417,8 @@ _<backspace>_ _<return>_ cancel
  "s-r" 'g/open-resize
  "s-s" 'guancio-split/body
  "s-m" 'guancio-move/body
+
+ "s-a" 'toggle-frame-maximized
 
  "<M-s-left>" 'g/buf-move-left
  "<M-s-right>" 'g/buf-move-right
@@ -414,16 +436,34 @@ _<backspace>_ _<return>_ cancel
  "s-8" 'winum-select-window-8
  "s-9" 'winum-select-window-9
 
- "s-a" 'toggle-frame-maximized
  "s-d" 'delete-window
  "s-q" 'g/kill-buffer-may-delete-window
  "s-b" 'helm-mini
+ "s-f" 'helm-find-files
  "s-z" 'winner-undo
  "s-u" 'winner-redo
  "s-o" 'delete-other-windows
  "s-c" 'g/copy-window
  "s-x" 'g/cut-window
  "s-v" 'g/paste-window
+
+ "s-C" 'eyebrowse-create-window-config
+ "s-D" 'eyebrowse-close-window-config
+ "s-)" 'eyebrowse-switch-to-window-config-0
+ "s-!" 'eyebrowse-switch-to-window-config-1
+ "s-@" 'eyebrowse-switch-to-window-config-2
+ "s-#" 'eyebrowse-switch-to-window-config-3
+ "s-$" 'eyebrowse-switch-to-window-config-4
+ "s-%" 'eyebrowse-switch-to-window-config-5
+ "s-^" 'eyebrowse-switch-to-window-config-6
+ "s-&" 'eyebrowse-switch-to-window-config-7
+ "s-*" 'eyebrowse-switch-to-window-config-8
+ "s-(" 'eyebrowse-switch-to-window-config-9
+ "s-<tab>" 'eyebrowse-last-window-config
+ "s-[" 'eyebrowse-prev-window-config
+ "s-]" 'eyebrowse-next-window-config
+ "s-w" 'eyebrowse-switch-to-window-config
+ "s-`" 'eyebrowse-rename-window-config
 )
 
 (general-define-key

@@ -16,7 +16,7 @@
     ))
 
 (use-package mu4e
-  :load-path "/usr/share/emacs/site-lisp/mu4e"
+  :load-path "/usr/local/share/emacs/site-lisp/mu4e"
   :commands (mu4e mu4e-headers-search mu4e-compose-new mu4e~proc-add)
   :init
   (setq
@@ -63,64 +63,61 @@
    "mos" 'g/stop-offline-imap-process
    )
 
-  (general-define-key
-   :prefix "<f7> m"
+
+
+(general-define-key
    :keymaps 'mu4e-headers-mode-map
+   "<f7> m" 'mu4e-headres-hydra/body)
 
-   "SPC" 'mu4e-mark-resolve-deferred-marks
-   "." 'mu4e-headers-mark-for-something
-   "?" 'mu4e-headers-mark-for-unread
-
-   "C" 'mu4e-compose-new
-   "F" 'mu4e-compose-forward
-   "R" 'mu4e-compose-reply
-   
+;; Fix we cannot select with ijkl.
+(general-define-key
+   :keymaps 'mu4e-headers-mode-map
+   "i" 'previous-line
+   "j" 'left-char
+   "k" 'next-line
+   "l" 'right-char
+   ;;
+   "u" 'mu4e-headers-prev
+   "o" 'mu4e-headers-next
+   ;;
    "d" 'mu4e-headers-mark-for-trash
    "D" 'mu4e-headers-mark-for-delete
-   
-   "t" 'mu4e-headers-mark-thread
-   "U" 'mu4e-mark-unmark-all
-   "g" 'mu4e-headers-rerun-search
-   "j" 'mu4e~headers-jump-to-maildir
-   "m" 'mu4e-headers-mark-for-move
-   "n" 'mu4e-headers-next
-   "p" 'mu4e-headers-prev
+   "T" 'mu4e-headers-mark-thread
+   ;; "t" 'mu4e-headers-mark-thread-only select thread
+   "a" '(mu4e-headers-mark-for-refile :which-key "archive/refile")
+   "z" 'mu4e-headers-mark-for-unmark
+   "Z" 'mu4e-mark-unmark-all
+   "SPC" 'mu4e-headers-mark-for-something
+   "g" 'mu4e-headers-mark-for-unread
+   "s" '(mu4e-headers-mark-for-move :which-key "save somewhere/move")
    "q" 'mu4e~headers-quit-buffer
-   "r" 'mu4e-headers-mark-for-refile
-   "u" 'mu4e-headers-mark-for-unmark
-   "x" 'mu4e-mark-execute-all
-   )
-
-  (general-define-key
-   :keymaps 'mu4e-headers-mode-map
-
-   "SPC" 'mu4e-mark-resolve-deferred-marks
-   "." 'mu4e-headers-mark-for-something
-   "?" 'mu4e-headers-mark-for-unread
-
-   "C" 'mu4e-compose-new
-   "F" 'mu4e-compose-forward
-   "R" 'mu4e-compose-reply
-   
-   "d" 'mu4e-headers-mark-for-trash
-   "D" 'mu4e-headers-mark-for-delete
-   
-   "S" 'mu4e-headers-search
+   "x" 'mu4e-mark-resolve-deferred-marks
+   "e" 'mu4e-mark-execute-all
+   "c" 'mu4e-compose-new
+   "f" 'mu4e-compose-forward
+   "r" 'mu4e-compose-reply
+   "y" 'mu4e~headers-jump-to-maildir
+   ;; to fix
+   "G" 'mu4e-headers-rerun-search
    "/" 'mu4e-headers-search-narrow
-   "e" 'mu4e-headers-search-edit
-   "t" 'mu4e-headers-mark-thread
-   "U" 'mu4e-mark-unmark-all
-   "g" 'mu4e-headers-rerun-search
-   "j" 'mu4e~headers-jump-to-maildir
-   "m" 'mu4e-headers-mark-for-move
-   "n" 'mu4e-headers-next
-   "p" 'mu4e-headers-prev
-   "q" 'mu4e~headers-quit-buffer
-   "r" 'mu4e-headers-mark-for-refile
-   "u" 'mu4e-headers-mark-for-unmark
-   "x" 'mu4e-mark-execute-all
-   )
+   "." 'mu4e-headers-search-edit
+   "," 'mu4e-headers-search
+   "m" 'helm-mu
+   "C" 'helm-mu-contacts
+   "[" 'mu4e-headers-query-prev
+   "]" 'mu4e-headers-query-next
+   "?" 'which-key-show-top-level
+   ;; "w"  "p"
+   ;;     ";" "'"
+   ;; "v" "b" "n"
+  )
 
+  ;; TODO
+  ;; remove things from the powerline, since I cannot see the search result
+  ;; Ivy list of last queries
+  ;; detach message
+  ;; open in emacs
+  ;; better text selection in message view
   (general-define-key
    :prefix "<f7> t"
    :keymaps 'mu4e-headers-mode-map
@@ -134,10 +131,10 @@
    :prefix "<f7> s"
    :keymaps 'mu4e-headers-mode-map
    "/" 'mu4e-headers-search-narrow
-   "e" 'mu4e-headers-search-edit
-   "f" 'mu4e-headers-search
+   "." 'mu4e-headers-search-edit
+   "," 'mu4e-headers-search
    "m" 'helm-mu
-   "c" 'helm-mu-contacts)
+   "C" 'helm-mu-contacts)
 
    ;; %		mu4e-headers-mark-pattern
    ;; &		mu4e-headers-mark-custom
@@ -156,17 +153,8 @@
    ;; ]		mu4e-headers-next-unread
    ;; a		mu4e-headers-action
    ;; b		mu4e-headers-search-bookmark
-   ;; <M-left>	mu4e-headers-query-prev
-   ;; <M-right>	mu4e-headers-query-next
 
    
-
-  ;; mu4e message: download attachment...
-  ;; detach message
-  ;; open in emacs
-  ;; compose from to/from
-  ;; show addresses
-  
   (general-define-key
    :keymaps 'mu4e-view-mode-map
    :prefix "<f7>"
@@ -184,80 +172,60 @@
            )
    )
 
-  (general-define-key
-   :prefix "<f7> m"
-   :keymaps 'mu4e-view-mode-map
-
-   "." 'mu4e-view-mark-for-something
-   "?" 'mu4e-view-mark-for-unread
-
-   "C" 'mu4e-compose-new
-   "F" 'mu4e-compose-forward
-   "R" 'mu4e-compose-reply
-   
-   "d" 'mu4e-view-mark-for-trash
-   "D" 'mu4e-view-mark-for-delete
-   
-   "a" '(:ignore t :which-key "attachment")
-   "a a" 'mu4e-view-attachment-action
-   "a s" 'mu4e-view-save-attachment
-   "a o" 'mu4e-view-open-attachment
-   
-   "t" 'mu4e-view-mark-thread
-   "U" 'mu4e-view-unmark-all
-   "g" 'mu4e-view-go-to-url
-   "j" 'mu4e~headers-jump-to-maildir
-   "m" 'mu4e-view-mark-for-move
-   "n" 'mu4e-view-next
-   "p" 'mu4e-view-prev
-   "q" 'mu4e~view-quit-buffer
-   "r" 'mu4e-view-mark-for-refile
-   "u" 'mu4e-view-unmark
-   "x" 'mu4e-view-marked-execute
-
-   "e" 'mu4e-view-search-edit
-   "s" 'mu4e-headers-search
-   )
-
+  ;; Copmpose should be "c"
   (general-define-key
    :keymaps 'mu4e-view-contacts-header-keymap
-   "<f7>mc" 'mu4e~view-copy-contact)
+   "<f7>mC" 'mu4e~view-copy-contact)
   (general-define-key
    :keymaps 'mu4e-view-contacts-header-keymap
-   "c" 'mu4e~view-copy-contact)
+   "C" 'mu4e~view-copy-contact)
   
   (general-define-key
    :keymaps 'mu4e-view-mode-map
-
-   "." 'mu4e-view-mark-for-something
-   "?" 'mu4e-view-mark-for-unread
-
-   "C" 'mu4e-compose-new
-   "F" 'mu4e-compose-forward
-   "R" 'mu4e-compose-reply
-   
+   "i" 'previous-line
+   "j" 'left-char
+   "k" 'next-line
+   "l" 'right-char
+   ;;
+   "u" 'mu4e-view-headers-prev
+   "o" 'mu4e-view-headers-next
+   ;;
    "d" 'mu4e-view-mark-for-trash
    "D" 'mu4e-view-mark-for-delete
-   
-
-   "t" 'mu4e-view-mark-thread
-   "U" 'mu4e-view-unmark-all
-   "g" 'mu4e-view-go-to-url
-   "j" 'mu4e~headers-jump-to-maildir
-   "m" 'mu4e-view-mark-for-move
-   "n" 'mu4e-view-headers-next
-   "p" 'mu4e-view-headers-prev
+   "T" 'mu4e-view-mark-thread
+   ;;
+   "a" '(mu4e-view-mark-for-refile :which-key "archive/refile")
+   "z" 'mu4e-view-unmark
+   "Z" 'mu4e-view-unmark-all
+   "SPC" 'mu4e-view-mark-for-something
+   "g" 'mu4e-view-mark-for-unread
+   "s" '(mu4e-view-mark-for-move  :which-key "save somewhere/move")
    "q" 'mu4e~view-quit-buffer
-   "r" 'mu4e-view-mark-for-refile
-   "u" 'mu4e-view-unmark
-   "x" 'mu4e-view-marked-execute
-   "e" 'mu4e-view-search-edit
-   "s" 'mu4e-headers-search
+   "x" 'mu4e-mark-resolve-deferred-marks
+   "e" 'mu4e-view-marked-execute
+   ;;
+   "c" 'mu4e-compose-new
+   "f" 'mu4e-compose-forward
+   "r" 'mu4e-compose-reply
+   "y" 'mu4e~headers-jump-to-maildir
+   ;; to fix
+   "G" 'mu4e-view-rerun-search
+   "/" 'mu4e-view-search-narrow
+   "." 'mu4e-view-search-edit
+   "," 'mu4e-headers-search
+   "m" 'helm-mu
+   "C" 'helm-mu-contacts
+   "[" 'mu4e-headers-query-prev
+   "]" 'mu4e-headers-query-next
+   "?" 'which-key-show-top-level
+   ;;
+   "w" 'mu4e-view-go-to-url
    )
+  ;; attachment
 
   (general-define-key
    :keymaps 'mu4e-view-mode-map
-   :prefix "a"
+   :prefix "A"
    "" '(nil :which-key "attachment")
    "a" 'mu4e-view-attachment-action
    "s" 'mu4e-view-save-attachment
@@ -272,6 +240,7 @@
   ;; <M-up>		mu4e-view-headers-prev
 
   ;; C-c C-u		mu4e-update-mail-and-index
+
 
 
   (general-define-key
@@ -296,16 +265,6 @@
     :init
     (general-define-key
      :keymaps 'mu4e-main-mode-map
-     "<f7> m s" 'helm-mu
-     "s" 'helm-mu
-     )
-    (general-define-key
-     :keymaps 'mu4e-headers-mode-map
-     "<f7> m s" 'helm-mu
-     "s" 'helm-mu
-     )
-    (general-define-key
-     :keymaps 'mu4e-view-mode-map
      "<f7> m s" 'helm-mu
      "s" 'helm-mu
      )
@@ -351,7 +310,11 @@
   )
 
 
-
+(use-package mu4e-conversation
+  :ensure t
+  :init
+  (global-mu4e-conversation-mode)
+  )
 
 ;; (defun helm-contacts ()
 ;;   (interactive)

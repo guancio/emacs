@@ -92,10 +92,11 @@ Version 2017-11-01"
      "h m" 'describe-mode
      "m"  '(:ignore t :which-key "Mode")
      "k"  '(:ignore t :which-key "Text")
-     "k c" 'comment-or-uncomment-region
-     "k s" 'kmacro-start-macro
-     "k d" 'kmacro-end-macro
-     "k e" 'kmacro-end-and-call-macro
+     "k ;" 'comment-or-uncomment-region
+     "k c" 'kill-ring-save
+     "k x" 'kill-ring
+     "k v" 'yank
+     "k V" 'helm-show-kill-ring
      "k a" 'mark-whole-buffer
      "s"  '(:ignore t :which-key "Search")
      "s s" 'helm-swoop
@@ -115,6 +116,20 @@ Version 2017-11-01"
 (global-set-key (kbd "M-x") #'helm-M-x)
 (global-set-key (kbd "C-S-v") #'helm-show-kill-ring)
 
+(use-package elmacro
+  :ensure t
+  :commands (elmacro-mode)
+  :init
+  (general-define-key
+   "<f7> k m"  '(:ignore t :which-key "Macro")
+   "<f7> k m s" '((lambda () (interactive)
+                   (elmacro-mode)
+                   (kmacro-start-macro nil)) :which-key "start")
+   "<f7> k m e" 'kmacro-end-or-call-macro
+   "<f7> k m p" 'elmacro-show-last-macro
+   "<f7> k e" 'kmacro-end-and-call-macro
+   )
+  )
 
 
 (use-package which-key :ensure t
@@ -131,6 +146,9 @@ Version 2017-11-01"
 ;; Otherwise eshell uses a new frame
 (setq helm-show-completion-display-function #'helm-show-completion-default-display-function)
 
+;; (setq helm-display-function #'helm-display-buffer-in-own-frame)
+;; (use-package frames-only-mode :ensure t
+;; :config (frames-only-mode))
 
 (helm-mode 1)
 

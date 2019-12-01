@@ -34,9 +34,9 @@
   (bash-completion-setup)
   )
 
-(defun setup-eshell-helm-completion ()
-  (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete))
+;; (defun setup-eshell-helm-completion ()
+;;   (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete))
 
-(add-hook 'eshell-mode-hook #'setup-eshell-helm-completion)
+;; (add-hook 'eshell-mode-hook #'setup-eshell-helm-completion)
 
 (provide 'g-shell)

@@ -1,3 +1,4 @@
+
 (use-package spot4e
   :load-path "/home/guancio/emacs-test/private/spot4e/"
   :init
@@ -10,7 +11,36 @@
    )
   )
 
+(use-package 2048-game
+  :ensure t
+  :init
+  (general-define-key
+   "<f7> a 2" '2048-game
+   )
+  )
 
 (provide 'g-misc)
 
+ 
 
+;; (xah-fly-keys-set-layout "qwerty") 
+;; (use-package xah-fly-keys :ensure t)
+;; (xah-fly-keys 1)
+
+;; (use-package boon
+;;   :ensure t
+;;   :init
+;;   (require 'boon-qwerty)
+;;   (boon-mode nil)
+;;   )
+;; (require 'boon-powerline)
+(use-package gif-screencast
+  :ensure t
+  :init
+  (general-define-key
+   "<f7> a c s" 'gif-screencast
+   "<f7> a c e" 'gif-screencast-stop
+   ))
+(use-package keycast
+  :ensure t
+ )

@@ -16,7 +16,12 @@
 
 (general-define-key
  :prefix "<f7> o"
- "c" 'org-capture
+ "c" '((lambda () (interactive)
+         (let ((b (get-file-buffer org-default-notes-file)))
+           (if b
+               (with-current-buffer b
+                 (revert-buffer t t t)))
+           (org-capture))) :which-key "capture")
  "l" 'org-store-link
  )
 
@@ -31,10 +36,21 @@
    )
   )
 
+(defun g-org-mode-hook ()
+  (if (equal
+       (file-truename org-default-notes-file)
+         (buffer-file-name))
+      (auto-revert-mode 1)))
+
+
+(add-hook 'org-mode-hook 'g-org-mode-hook)
 
 (org-babel-do-load-languages
  'org-babel-load-languages
- '((R . t)))
+ '((R . t)
+   (python . t)))
 
+(use-package htmlize
+  :ensure t)
 
 (provide 'g-org)

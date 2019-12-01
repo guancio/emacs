@@ -654,3 +654,79 @@ _<backspace>_ _<return>_ cancel
  )
 
 (provide 'g-window)
+
+
+
+
+(defhydra mu4e-headres-hydra (:color blue :hint nil)
+  "
+^Mark^                                                                 | ^Navigate^                                                   | New mail
+  _._: deferred  _t_: thread  _d_: trash  _u_: unmark     _?_: unread  _m_: move | _q_: quit    _g_: update   _/_: narrow     _s_: helm  _[_ _]_: history | _C_: compose _F_: forward
+_SPC_: resolve   _x_: execute _D_: delete _U_: unmark all _r_: refile          | _j_: maildir _c_: contacts _e_: edit query _S_ search              | _R_: reply
+"
+  ("." mu4e-headers-mark-for-something)
+  ("SPC" mu4e-mark-resolve-deferred-marks)
+  ("?" mu4e-headers-mark-for-unread)
+  ("d" mu4e-headers-mark-for-trash)
+  ("D" mu4e-headers-mark-for-delete)
+  ("t" mu4e-headers-mark-thread)
+  ("x" mu4e-mark-execute-all)
+  ("u" mu4e-headers-mark-for-unmark)
+  ("U" mu4e-mark-unmark-all)
+  ("m" mu4e-headers-mark-for-move)
+  ("g" mu4e-headers-rerun-search)
+  ("j" mu4e~headers-jump-to-maildir)
+  ("q" mu4e~headers-quit-buffer)
+  ("C" mu4e-compose-new)
+  ("F" mu4e-compose-forward)
+  ("R" mu4e-compose-reply)
+  ("r" mu4e-headers-mark-for-refile)
+  ("<down>" next-line)
+  ("/" mu4e-headers-search-narrow)
+  ("e" mu4e-headers-search-edit)
+  ("S" mu4e-headers-search)
+  ("s" helm-mu)
+  ("c" helm-mu-contacts)
+  ("[" mu4e-headers-query-prev)
+  ("]" mu4e-headers-query-next)
+  )
+
+
+(defhydra mu4e-view-hydra (:color blue :hint nil)
+  "
+^Mark^                                                    | ^Navigate^                                                   | New mail              | Attachments
+  _._: deferred  _t_: thread  _d_: trash  _u_: unmark _?_: unread | _q_: quit                _/_: narrow     _s_: helm  _[_ _]_: history | _C_: compose _F_: forward | _as_: save _aa_: action
+               _x_: execute _D_: delete _r_: refile _m_: move   | _j_: maildir _c_: contacts _e_: edit query _S_ search              | _R_: reply              | _ao_: open
+"
+  ("." mu4e-view-mark-for-something)
+  ("?" mu4e-view-mark-for-unread)
+  ("d" mu4e-view-mark-for-trash)
+  ("D" mu4e-view-mark-for-delete)
+  ("t" mu4e-view-mark-thread)
+  ("x" mu4e-view-marked-execute)
+  ("u" mu4e-view-unmark)
+  ("m" mu4e-view-mark-for-move)
+("g" mu4e-view-go-to-url)
+  ("j" mu4e~headers-jump-to-maildir)
+  ("q" mu4e~view-quit-buffer)
+  ("C" mu4e-compose-new)
+  ("F" mu4e-compose-forward)
+  ("R" mu4e-compose-reply)
+  ("r" mu4e-view-mark-for-refile)
+  ("/" mu4e-view-search-narrow)
+  ("e" mu4e-view-search-edit)
+  ("S" mu4e-view-search)
+  ("s" helm-mu)
+  ("c" helm-mu-contacts)
+  ("[" helm-mu)
+  ("]" helm-mu-contacts)
+  ("as" mu4e-view-save-attachment)
+  ("aa" mu4e-view-attachment-action)
+  ("ao" mu4e-view-open-attachment)
+  )
+(general-define-key
+   :prefix "<f7>"
+   :keymaps 'mu4e-view-mode-map
+   "m" 'mu4e-view-hydra/body
+   )
+

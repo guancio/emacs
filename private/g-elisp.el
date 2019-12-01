@@ -8,4 +8,6 @@
 
 (setq-default indent-tabs-mode nil)
 
+(add-hook 'emacs-lisp-mode-hook 'show-paren-mode)
+
 (provide 'g-elisp)
