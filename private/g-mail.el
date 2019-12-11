@@ -65,11 +65,11 @@
 
 
 
+
 (general-define-key
    :keymaps 'mu4e-headers-mode-map
    "<f7> m" 'mu4e-headres-hydra/body)
 
-;; Fix we cannot select with ijkl.
 (general-define-key
    :keymaps 'mu4e-headers-mode-map
    "i" 'previous-line
@@ -89,7 +89,9 @@
    "Z" 'mu4e-mark-unmark-all
    "SPC" 'mu4e-headers-mark-for-something
    "g" 'mu4e-headers-mark-for-unread
-   "s" '(mu4e-headers-mark-for-move :which-key "save somewhere/move")
+   "m" 'mu4e-headers-mark-for-move
+   "E" 'mu4e-compose-edit
+   ;; "s" star
    "q" 'mu4e~headers-quit-buffer
    "x" 'mu4e-mark-resolve-deferred-marks
    "e" 'mu4e-mark-execute-all
@@ -98,11 +100,11 @@
    "r" 'mu4e-compose-reply
    "y" 'mu4e~headers-jump-to-maildir
    ;; to fix
-   "G" 'mu4e-headers-rerun-search
+   "<f5>" 'mu4e-update-index
    "/" 'mu4e-headers-search-narrow
    "." 'mu4e-headers-search-edit
    "," 'mu4e-headers-search
-   "m" 'helm-mu
+   "M-/" 'helm-mu
    "C" 'helm-mu-contacts
    "[" 'mu4e-headers-query-prev
    "]" 'mu4e-headers-query-next
@@ -112,12 +114,6 @@
    ;; "v" "b" "n"
   )
 
-  ;; TODO
-  ;; remove things from the powerline, since I cannot see the search result
-  ;; Ivy list of last queries
-  ;; detach message
-  ;; open in emacs
-  ;; better text selection in message view
   (general-define-key
    :prefix "<f7> t"
    :keymaps 'mu4e-headers-mode-map
@@ -172,13 +168,14 @@
            )
    )
 
-  ;; Copmpose should be "c"
   (general-define-key
    :keymaps 'mu4e-view-contacts-header-keymap
    "<f7>mC" 'mu4e~view-copy-contact)
   (general-define-key
    :keymaps 'mu4e-view-contacts-header-keymap
-   "C" 'mu4e~view-copy-contact)
+   "C" 'mu4e~view-copy-contact
+   "c" 'mu4e-view-compose-contact
+   )
   
   (general-define-key
    :keymaps 'mu4e-view-mode-map
@@ -199,7 +196,7 @@
    "Z" 'mu4e-view-unmark-all
    "SPC" 'mu4e-view-mark-for-something
    "g" 'mu4e-view-mark-for-unread
-   "s" '(mu4e-view-mark-for-move  :which-key "save somewhere/move")
+   "m" 'mu4e-view-mark-for-move
    "q" 'mu4e~view-quit-buffer
    "x" 'mu4e-mark-resolve-deferred-marks
    "e" 'mu4e-view-marked-execute
@@ -208,12 +205,11 @@
    "f" 'mu4e-compose-forward
    "r" 'mu4e-compose-reply
    "y" 'mu4e~headers-jump-to-maildir
-   ;; to fix
-   "G" 'mu4e-view-rerun-search
+   "<f5>" 'mu4e-update-index
    "/" 'mu4e-view-search-narrow
    "." 'mu4e-view-search-edit
    "," 'mu4e-headers-search
-   "m" 'helm-mu
+   "M-/" 'helm-mu
    "C" 'helm-mu-contacts
    "[" 'mu4e-headers-query-prev
    "]" 'mu4e-headers-query-next
@@ -223,6 +219,7 @@
    )
   ;; attachment
 
+   ;; open with emacs
   (general-define-key
    :keymaps 'mu4e-view-mode-map
    :prefix "A"
@@ -310,18 +307,90 @@
   )
 
 
-(use-package mu4e-conversation
-  :ensure t
-  :init
-  (global-mu4e-conversation-mode)
-  )
-
 ;; (defun helm-contacts ()
 ;;   (interactive)
 ;;   (helm :sources '(helm-source-org-contacts helm-source-mu-contacts)
 ;;         :candidate-number-limit 500))
 
 ;; (helm-mu-contacts)
+
+;; detach emails
+;; it works, but now we should split the window when we open mu
+;; (use-package mu4e-goodies-hacks
+;;   :load-path "/home/guancio/emacs-test/private/mu4e-goodies"
+;;   :init
+;;   (setq mu4e-split-view 'single-window))
+
+;; edit should not ask to remove backup file
+
+;; remove things from the powerline, since I cannot see the search result
+;; alternatively use dim mode
+(use-package diminish
+  :ensure t
+  :init
+  (progn
+    (diminish 'ivy-posframe-mode)
+    (diminish 'ivy-mode)
+    (diminish 'mu4e-headers-mode)
+    (diminish 'projectile-mode)
+    (diminish 'undo-tree-mode)
+    (diminish 'helm-mode)
+    (diminish 'which-key-mode)
+    (diminish 'disable-mouse-global-mode " M")
+  ))
+
+
+;; Ivy list of last queries
+(use-package ivy
+  :ensure t
+  :init
+  (general-define-key
+   :keymaps 'mu4e-headers-mode-map
+   "h" 
+   (lambda () (interactive)
+    ;; This should be fixed to no re-execute all the intermediary queries
+    (let* ((values (append
+                    (reverse
+                     (seq-map-indexed (lambda (x idx) (format "%d %s" (+ idx 1)  x))
+                                      mu4e~headers-query-future))
+                    (cons (format "0 %s"  mu4e~headers-last-query)
+                          (seq-map-indexed (lambda (x idx) (format "%d %s" (- -1 idx)  x))
+                                           mu4e~headers-query-past))
+                    ))
+           (selection (ivy-read "Query: " values :preselect (length mu4e~headers-query-future)))
+           (offset (string-to-number (car (split-string selection))))
+           )
+      (if (= offset 0) nil
+        (if (> offset 0)
+            (let (res)      ; otherwise a value is a void variable
+              (dotimes (number offset res)
+                (mu4e~headers-query-navigate 'future)
+              ))
+          (let (res)      ; otherwise a value is a void variable
+            (dotimes (number (- 0 offset) res)
+              (mu4e~headers-query-navigate 'past)
+              ))
+          )
+        )
+      )
+    :which-key "history"
+    )
+   ))
+
+;; (message "%s"
+;;          (mapcar (lambda (x) (cons 1  (cons x ())))
+;;                  mu4e~headers-query-past))
+;; (message (ivy-read "Query: " mu4e~headers-query-past))
+
+;; attachment
+;; open in emacs
+;; better text selection in message view
+;; emulate dired mode: if nothing selected then do action otherwise do on selected
+;; Fix we cannot select with ijkl.
+
+;; Copmpose from contacts does not work. should be "c"
+;; Keybinding for threads
+;; select with ijkl does not work
 
 
 (provide 'g-mail)

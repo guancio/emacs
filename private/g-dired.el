@@ -160,45 +160,48 @@ _i_ insert dir  | ^ ^            | ^ ^            _a_ attach       ^ ^        | 
    "k" 'next-line
    "l" 'right-char
    ;;
-  "k" (lambda () (interactive) (dired-do-kill-lines t))
-  ;;"i" 'dired-maybe-insert-subdir
+   ";" (lambda () (interactive) (dired-do-kill-lines t))
+   "'" 'dired-maybe-insert-subdir
   ;; goto file
-  "+" 'dired-create-directory
+  "n" 'dired-create-directory
   "C" 'dired-do-copy
-  "D" 'dired-do-delete
-  "L" 'dired-do-symlink
-  "R" 'dired-do-rename
-  "." 'dired-mark
-  "u" 'dired-unmark
-  "U" 'dired-unmark-all-marks
-  "G" 'dired-do-chgrp
-  "M" 'dired-do-chmod
-  "O" 'dired-do-chown
-  "&" 'dired-do-async-shell-command
+  "d" 'dired-do-delete
+  "S" 'dired-do-symlink
+  "s" 'dired-do-rename
+  "SPC" 'dired-mark
+  "z" 'dired-unmark
+  "Z" 'dired-unmark-all-marks
+  "c" 'wuxch-dired-copy
+  "x" 'wuxch-dired-cut
+  "v" 'wuxch-dired-paste
+  "e" nil
+  "e g" 'dired-do-chgrp
+  "e m" 'dired-do-chmod
+  "e o" 'dired-do-chown
+  "e r" 'dired-toggle-read-only
   "E" (lambda () (interactive)
          (progn
            (setq helm-ff-default-directory (dired-current-directory))
            (helm-ff-switch-to-eshell nil)))
-  "!" 'dired-do-shell-command
-  "Z" 'dired-do-compress
-  "z" 'dired-do-compress-to
-  "a" 'gnus-dired-attach
-
-  "c" 'wuxch-dired-copy
-  "x" 'wuxch-dired-cut
-  "v" 'wuxch-dired-paste
-
-  "y" 'dired-show-file-type
-  "w" 'dired-copy-filename-as-kill
-  "S" 'dired-do-find-regexp
+  "a" nil
+  "a Z" 'dired-do-compress
+  "a z" 'dired-do-compress-to
+  "a a" 'gnus-dired-attach
+  "a S" 'dired-do-async-shell-command
+  "a s" 'dired-do-shell-command
+  "a c" 'dired-copy-filename-as-kill
+  "/" 'dired-do-find-regexp
   "=" 'dired-diff
-  "e" 'dired-toggle-read-only
+  "?" 'which-key-show-top-level
  )
 
+;; TODO grep etc
+
+;; TODO open without loosing focus
 (general-define-key
  :keymaps 'dired-mode-map
- :prefix "o"
- "" '(nil :which-key "Open")
+ :prefix "f"
+ "" '(nil :which-key "Find file")
  "1" 'g/find-select-window-1
  "2" 'g/find-select-window-2
  "3" 'g/find-select-window-3
@@ -211,14 +214,14 @@ _i_ insert dir  | ^ ^            | ^ ^            _a_ attach       ^ ^        | 
 )
 (general-define-key
  :keymaps 'dired-mode-map
- :prefix "r"
+ :prefix "."
  "" '(nil :which-key "Regexp")
- "r C" 'dired-do-copy-regexp
- "r H" 'dired-do-hardlink-regexp
- "r R" 'dired-do-rename-regexp
- "r L" 'dired-do-symlink-regexp
- "r g" 'dired-mark-files-containing-regexp
- "r m" 'dired-mark-files-regexp
+ "c" 'dired-do-copy-regexp
+ "h" 'dired-do-hardlink-regexp
+ "r" 'dired-do-rename-regexp
+ "l" 'dired-do-symlink-regexp
+ "M" 'dired-mark-files-containing-regexp
+ "m" 'dired-mark-files-regexp
 )
  ;; "r &" 'dired-flag-garbage-files
  ;; "r d" 'dired-flag-files-regexp
@@ -287,4 +290,17 @@ _i_ insert dir  | ^ ^            | ^ ^            _a_ attach       ^ ^        | 
 (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
 
 
+(use-package ranger
+  :ensure t
+  :init
+  )
+;; TODO do something like ivy. you start writing and move there
+;; probaby just use swiper
+
+;; better integration of eshell.
+;; Like do no pop shell on the current dired (if that eshell is in the current workspace)
+;; should we find something like purpose
+
 (provide 'g-dired)
+
+

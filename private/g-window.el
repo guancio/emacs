@@ -516,3 +516,5 @@ Move   | Subactions ^^ | Delete ^^   | CUA ^^^^^^           | Workspace ^^      
 
 
 (provide 'g-window)
+
+;; maybe just split top instead of select the window
